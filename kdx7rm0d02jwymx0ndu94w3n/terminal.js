@@ -91,6 +91,22 @@
     eq("hide sum null", hideSummedTotals(null), true);
     eq("show explicit sum", hideSummedTotals({ legacy_non_additive: false }), false);
     eq("opens", countOpens([{ open: [{}, {}] }, { open: [] }, { open: [{}] }]), 3);
+    var carried = carryWindow([
+      { ms: 0, v: 100, t: "a" },
+      { ms: 10 * 864e5, v: 90, t: "b" },
+      { ms: 20 * 864e5, v: 90, t: "now" }
+    ], 7 * 864e5);
+    eq("carry len", carried.pts.length, 2);
+    eq("carry start", carried.pts[0].ms, 13 * 864e5);
+    eq("carry value", carried.pts[0].v, 90);
+    eq("carry trades", carried.trades, 0);
+    var traded = carryWindow([
+      { ms: 0, v: 100, t: "a" },
+      { ms: 18 * 864e5, v: 80, t: "trade" },
+      { ms: 20 * 864e5, v: 80, t: "now" }
+    ], 7 * 864e5);
+    eq("trade count", traded.trades, 2);
+    eq("trade first carried", traded.pts[0].carried, true);
     var candles = stepsToCandles([{ t: "a", ms: 1, v: 10 }, { t: "b", ms: 2, v: 12 }]);
     eq("open", candles[1].o, 10);
     eq("close", candles[1].c, 12);
@@ -760,12 +776,28 @@ function fmtPctFrac(v) {
     return Infinity;
   }
 
-  function filterByRange(bars) {
-    if (!bars.length || !isFinite(rangeWindowMs())) return bars;
-    var end = bars[bars.length - 1].ms;
-    var cut = end - rangeWindowMs();
-    var out = bars.filter(function (b) { return b.ms >= cut; });
-    return out.length ? out : [bars[bars.length - 1]];
+  function carryWindow(pts, windowMs) {
+    if (!pts.length || !isFinite(windowMs)) return { pts: pts.slice(), trades: pts.length };
+    var end = pts[pts.length - 1].ms;
+    var cut = end - windowMs;
+    var prior = null;
+    var inside = [];
+    pts.forEach(function (p) {
+      if (p.ms < cut) prior = p;
+      else inside.push(p);
+    });
+    var out = [];
+    if (prior) out.push({ t: prior.t, ms: cut, v: prior.v, carried: true });
+    else if (inside.length === 1) out.push({ t: inside[0].t, ms: cut, v: inside[0].v, carried: true });
+    inside.forEach(function (p) { out.push(p); });
+    if (out.length && out[out.length - 1].ms < end) {
+      var hold = prior ? prior.v : out[out.length - 1].v;
+      out.push({ t: pts[pts.length - 1].t, ms: end, v: hold, carried: true });
+    }
+    var onlySnapshot = prior && inside.length === 1 && inside[0].ms === end;
+    var noHistory = !prior && inside.length <= 1;
+    var trades = (onlySnapshot || noHistory) ? 0 : inside.length;
+    return { pts: out.length ? out : pts.slice(), trades: trades };
   }
 
   function syncBookPick() {
@@ -785,10 +817,7 @@ function fmtPctFrac(v) {
 
   function axisEquity(v) {
     if (!Number.isFinite(v)) return "–";
-    var s = Math.abs(v) >= 1000
-      ? Math.round(v).toLocaleString("de-DE")
-      : v.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return s + " €";
+    return v.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
   }
 
   function fmtAxis(s, span) {
@@ -847,10 +876,12 @@ function fmtPctFrac(v) {
       var base = pts[0].v;
       pts = pts.map(function (p) { return { t: p.t, ms: p.ms, v: (p.v / base - 1) * 100 }; });
     }
-    var built = S.mode === "candle" ? stepsToCandles(src.pts) : pts.map(function (p) {
+    var basePts = S.mode === "line" ? pts : src.pts;
+    var carried = carryWindow(basePts, rangeWindowMs());
+    var built = S.mode === "candle" ? stepsToCandles(carried.pts) : carried.pts.map(function (p) {
       return { t: p.t, ms: p.ms, o: p.v, h: p.v, l: p.v, c: p.v };
     });
-    var ranged = filterByRange(built);
+    var ranged = built;
     if (!ranged.length) {
       ctx.fillStyle = "#858585";
       ctx.font = "13px ui-monospace, monospace";
@@ -872,7 +903,7 @@ function fmtPctFrac(v) {
     }
     var bars = ranged.filter(function (b) { return b.ms >= t0 && b.ms <= t1; });
     if (!bars.length) bars = ranged.slice();
-    var pad = { l: 8, r: 86, t: 12, b: 26 };
+    var pad = { l: 8, r: 108, t: 12, b: 26 };
     var plotW = Math.max(10, w - pad.l - pad.r);
     var plotH = Math.max(10, h - pad.t - pad.b);
     function xOf(ms) {
@@ -915,9 +946,12 @@ function fmtPctFrac(v) {
     S.chart = {
       bars: bars, ranged: ranged, pct: pctMode, name: src.name,
       t0: t0, t1: t1, full0: full0, full1: full1,
-      pad: pad, plotW: plotW, plotH: plotH, yMin: min, yMax: max
+      pad: pad, plotW: plotW, plotH: plotH, yMin: min, yMax: max,
+      noTrades: isFinite(rangeWindowMs()) && carried.trades === 0
     };
     host.dataset.zoomed = S.zoom ? "1" : "0";
+    host.dataset.bars = String(bars.length);
+    host.dataset.note = S.chart.noTrades ? "1" : "0";
     ctx.font = "12px ui-monospace, monospace";
     ctx.textBaseline = "middle";
     ctx.strokeStyle = "#1c1c1c";
@@ -987,10 +1021,20 @@ function fmtPctFrac(v) {
       bars.forEach(function (b, i) {
         var x = xOf(b.ms);
         var y = yOf(b.c);
-        if (i) ctx.lineTo(x, y);
-        else ctx.moveTo(x, y);
+        if (!i) ctx.moveTo(x, y);
+        else {
+          ctx.lineTo(x, yOf(bars[i - 1].c));
+          ctx.lineTo(x, y);
+        }
       });
       ctx.stroke();
+    }
+    if (S.chart.noTrades) {
+      ctx.fillStyle = "#ffa028";
+      ctx.font = "12px ui-monospace, monospace";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.fillText("keine Trades im Zeitraum", pad.l + 8, pad.t + 6);
     }
     var hi = S.hover;
     var hb = hi != null && bars[hi] ? bars[hi] : null;
@@ -1072,18 +1116,29 @@ function fmtPctFrac(v) {
   var chartDrag = null;
   var chartPinch = null;
 
+  function showTipAt(clientX, clientY) {
+    S.tipPos = { x: clientX, y: clientY };
+    var best = nearestBar(clientX);
+    if (best == null) return;
+    S.hover = best;
+    drawChart();
+  }
+
   function onChartPointerDown(ev) {
     var host = ev.currentTarget;
-    if (host.setPointerCapture) { try { host.setPointerCapture(ev.pointerId); } catch (e) { /* ignore */ } }
     chartPointers[ev.pointerId] = { x: ev.clientX, y: ev.clientY };
     var ids = Object.keys(chartPointers);
     if (ids.length === 1 && S.chart) {
-      chartDrag = { x: ev.clientX, y: ev.clientY, t0: S.chart.t0, t1: S.chart.t1, moved: false };
+      chartDrag = { x: ev.clientX, y: ev.clientY, t0: S.chart.t0, t1: S.chart.t1, moved: false, axis: "" };
       chartPinch = null;
+      S.tipPinned = false;
     } else if (ids.length === 2 && S.chart) {
       var a = chartPointers[ids[0]], b = chartPointers[ids[1]];
       chartPinch = { dist: Math.hypot(a.x - b.x, a.y - b.y) || 1, t0: S.chart.t0, t1: S.chart.t1, mid: (a.x + b.x) / 2 };
       chartDrag = null;
+      if (host.setPointerCapture) {
+        try { host.setPointerCapture(ev.pointerId); } catch (e) { /* ignore */ }
+      }
     }
   }
 
@@ -1105,29 +1160,48 @@ function fmtPctFrac(v) {
     }
     if (chartDrag && ids.length === 1 && S.chart) {
       var dx = ev.clientX - chartDrag.x;
-      if (Math.abs(dx) > 3 || Math.abs(ev.clientY - chartDrag.y) > 3) chartDrag.moved = true;
-      if (chartDrag.moved && S.chart.plotW) {
-        var shift = -dx / S.chart.plotW * (chartDrag.t1 - chartDrag.t0);
-        applyZoom(chartDrag.t0 + shift, chartDrag.t1 + shift);
+      var dy = ev.clientY - chartDrag.y;
+      if (!chartDrag.axis) {
+        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) chartDrag.axis = "y";
+        else if (Math.abs(dx) > 8 && Math.abs(dx) >= Math.abs(dy)) chartDrag.axis = "x";
+      }
+      if (chartDrag.axis === "y") return;
+      if (chartDrag.axis === "x") {
+        chartDrag.moved = true;
+        S.tipPinned = false;
+        if (ev.currentTarget.setPointerCapture) {
+          try { ev.currentTarget.setPointerCapture(ev.pointerId); } catch (e) { /* ignore */ }
+        }
+        if (S.chart.plotW) {
+          var shift = -dx / S.chart.plotW * (chartDrag.t1 - chartDrag.t0);
+          applyZoom(chartDrag.t0 + shift, chartDrag.t1 + shift);
+        }
+        return;
       }
     }
-    S.tipPos = { x: ev.clientX, y: ev.clientY };
-    var best = nearestBar(ev.clientX);
-    if (best == null) return;
-    if (S.hover !== best) S.hover = best;
-    drawChart();
+    if (ev.pointerType === "touch") return;
+    S.tipPinned = false;
+    showTipAt(ev.clientX, ev.clientY);
   }
 
   function onChartPointerUp(ev) {
+    var tapped = chartDrag && !chartDrag.moved && chartDrag.axis !== "x" && chartDrag.axis !== "y";
     delete chartPointers[ev.pointerId];
     if (Object.keys(chartPointers).length < 2) chartPinch = null;
+    if (tapped) {
+      S.tipPinned = true;
+      showTipAt(ev.clientX, ev.clientY);
+    }
     if (!Object.keys(chartPointers).length) chartDrag = null;
   }
 
-  function onChartLeave() {
+  function onChartLeave(ev) {
+    if (S.tipPinned && ev && ev.pointerType !== "mouse") return;
     if (chartDrag && chartDrag.moved) return;
+    if (ev && ev.pointerType === "touch") return;
     S.hover = null;
     S.tipPos = null;
+    S.tipPinned = false;
     hideTip();
     drawChart();
   }
@@ -1481,5 +1555,5 @@ function fmtPctFrac(v) {
     setTimeout(function () { check(); }, 1500);
   }
 
-  return { boot: boot, gateState: gateState, stepsToCandles: stepsToCandles, selftest: selftest, numOrNull: numOrNull, isLiveAlarm: isLiveAlarm, hideSummedTotals: hideSummedTotals, countOpens: countOpens };
+  return { boot: boot, gateState: gateState, stepsToCandles: stepsToCandles, selftest: selftest, numOrNull: numOrNull, isLiveAlarm: isLiveAlarm, hideSummedTotals: hideSummedTotals, countOpens: countOpens, carryWindow: carryWindow };
 });
