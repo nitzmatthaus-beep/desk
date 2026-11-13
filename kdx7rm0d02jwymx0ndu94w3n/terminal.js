@@ -59,7 +59,9 @@
         o: prev,
         h: Math.max(prev, c),
         l: Math.min(prev, c),
-        c: c
+        c: c,
+        carried: !!pts[i].carried,
+        since: pts[i].since || ""
       });
     }
     return out;
@@ -788,8 +790,8 @@ function fmtPctFrac(v) {
       else inside.push(p);
     });
     var out = [];
-    if (prior) out.push({ t: new Date(cut).toISOString(), ms: cut, v: prior.v, carried: true });
-    else if (inside.length === 1) out.push({ t: new Date(cut).toISOString(), ms: cut, v: inside[0].v, carried: true });
+    if (prior) out.push({ t: new Date(cut).toISOString(), ms: cut, v: prior.v, carried: true, since: prior.t });
+    else if (inside.length === 1) out.push({ t: new Date(cut).toISOString(), ms: cut, v: inside[0].v, carried: true, since: inside[0].t });
     inside.forEach(function (p) { out.push(p); });
     if (out.length && out[out.length - 1].ms < end) {
       var hold = prior ? prior.v : out[out.length - 1].v;
@@ -880,7 +882,7 @@ function fmtPctFrac(v) {
     var basePts = S.mode === "line" ? pts : src.pts;
     var carried = carryWindow(basePts, rangeWindowMs());
     var built = S.mode === "candle" ? stepsToCandles(carried.pts) : carried.pts.map(function (p) {
-      return { t: p.t, ms: p.ms, o: p.v, h: p.v, l: p.v, c: p.v };
+      return { t: p.t, ms: p.ms, o: p.v, h: p.v, l: p.v, c: p.v, carried: !!p.carried, since: p.since || "" };
     });
     var ranged = built;
     if (!ranged.length) {
@@ -993,6 +995,7 @@ function fmtPctFrac(v) {
       lastLabel = x + tw / 2;
       ctx.fillText(text, x, h - 6);
     });
+    var wantStep = S.range !== "all" || bars.length < 8;
     if (S.mode === "candle") {
       var gaps = [];
       for (var i = 1; i < bars.length; i++) gaps.push(Math.abs(xOf(bars[i].ms) - xOf(bars[i - 1].ms)));
@@ -1013,7 +1016,7 @@ function fmtPctFrac(v) {
         var y2 = yOf(Math.min(b.o, b.c));
         ctx.fillRect(x - cw / 2, y1, cw, Math.max(1, y2 - y1));
       });
-      if (emaPts.length) {
+      if (emaPts.length && !wantStep) {
         ctx.strokeStyle = "#ffa028";
         ctx.lineWidth = 1.4;
         ctx.beginPath();
@@ -1025,9 +1028,10 @@ function fmtPctFrac(v) {
         });
         ctx.stroke();
       }
-    } else {
+    }
+    if (S.mode !== "candle" || wantStep) {
       ctx.strokeStyle = "#ffa028";
-      ctx.lineWidth = 1.8;
+      ctx.lineWidth = 2;
       ctx.beginPath();
       bars.forEach(function (b, i) {
         var x = xOf(b.ms);
@@ -1074,7 +1078,8 @@ function fmtPctFrac(v) {
       var tipVal = pctMode
         ? ((hb.c > 0 ? "+" : "") + hb.c.toFixed(2).replace(".", ",") + " %")
         : axisEquity(hb.c);
-      placeTip(host, S.tipPos.x, S.tipPos.y, "<b>" + esc(fmtTs(hb.t)) + "</b><br>" + esc(src.name) + " " + esc(tipVal));
+      var since = hb.carried && hb.since ? "<br>Stand seit " + esc(fmtDay(hb.since)) : "";
+      placeTip(host, S.tipPos.x, S.tipPos.y, "<b>" + esc(fmtTs(hb.t)) + "</b><br>" + esc(src.name) + " " + esc(tipVal) + since);
     } else hideTip();
   }
 
