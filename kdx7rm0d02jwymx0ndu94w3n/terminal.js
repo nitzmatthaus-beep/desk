@@ -98,6 +98,7 @@
     ], 7 * 864e5);
     eq("carry len", carried.pts.length, 2);
     eq("carry start", carried.pts[0].ms, 13 * 864e5);
+    eq("carry label", carried.pts[0].t, new Date(13 * 864e5).toISOString());
     eq("carry value", carried.pts[0].v, 90);
     eq("carry trades", carried.trades, 0);
     var traded = carryWindow([
@@ -787,8 +788,8 @@ function fmtPctFrac(v) {
       else inside.push(p);
     });
     var out = [];
-    if (prior) out.push({ t: prior.t, ms: cut, v: prior.v, carried: true });
-    else if (inside.length === 1) out.push({ t: inside[0].t, ms: cut, v: inside[0].v, carried: true });
+    if (prior) out.push({ t: new Date(cut).toISOString(), ms: cut, v: prior.v, carried: true });
+    else if (inside.length === 1) out.push({ t: new Date(cut).toISOString(), ms: cut, v: inside[0].v, carried: true });
     inside.forEach(function (p) { out.push(p); });
     if (out.length && out[out.length - 1].ms < end) {
       var hold = prior ? prior.v : out[out.length - 1].v;
@@ -1195,9 +1196,18 @@ function fmtPctFrac(v) {
   }
 
   function onChartPointerUp(ev) {
-    var tapped = chartDrag && !chartDrag.moved && chartDrag.axis !== "x" && chartDrag.axis !== "y";
+    finishChartPointer(ev, false);
+  }
+
+  function onChartPointerCancel(ev) {
+    finishChartPointer(ev, true);
+  }
+
+  function finishChartPointer(ev, cancelled) {
+    var tapped = !cancelled && chartDrag && !chartDrag.moved && chartDrag.axis !== "x" && chartDrag.axis !== "y";
     delete chartPointers[ev.pointerId];
     if (Object.keys(chartPointers).length < 2) chartPinch = null;
+    if (cancelled) S.tipPinned = false;
     if (tapped) {
       S.tipPinned = true;
       showTipAt(ev.clientX, ev.clientY);
@@ -1529,7 +1539,7 @@ function fmtPctFrac(v) {
       host.addEventListener("pointerdown", onChartPointerDown);
       host.addEventListener("pointermove", onChartPointerMove);
       host.addEventListener("pointerup", onChartPointerUp);
-      host.addEventListener("pointercancel", onChartPointerUp);
+      host.addEventListener("pointercancel", onChartPointerCancel);
       host.addEventListener("pointerleave", onChartLeave);
       host.addEventListener("wheel", onChartWheel, { passive: false });
       if (typeof ResizeObserver !== "undefined") {
