@@ -8,7 +8,7 @@ header{display:flex;align-items:center;gap:18px;padding:12px 18px;border-bottom:
 .kpi{display:flex;flex-direction:column;min-width:110px}.kpi b{font-size:18px;font-variant-numeric:tabular-nums}.kpi small{color:var(--mu);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
 .big b{font-size:24px;color:var(--cy)}.pos{color:var(--gr)!important}.neg{color:var(--rd)!important}.mu{color:var(--mu)}
 .sw{margin-left:auto;display:flex;background:var(--card2);border:1px solid var(--line);border-radius:6px;overflow:hidden}
-.sw button{background:none;border:0;color:var(--mu);padding:7px 14px;font-weight:600;cursor:pointer}.sw button.on{background:var(--te);color:#fff}
+.sw button{background:none;border:0;color:var(--mu);padding:7px 14px;font-weight:600;cursor:pointer}.sw button.on{background:var(--te);color:#fff}.sw a.term{display:flex;align-items:center;color:#111;background:#f0b90b;padding:7px 12px;font-weight:800;text-decoration:none;letter-spacing:.2px}.sw a.term:hover{background:#ffe08a;text-decoration:none}
 .sw button[disabled]{cursor:not-allowed;opacity:.45}
 main{padding:14px 18px;display:grid;gap:14px}.row{display:grid;gap:14px}.c2{grid-template-columns:2fr 1fr}
 @media(max-width:1100px){.c2{grid-template-columns:1fr}}
@@ -55,7 +55,7 @@ details.fd>.fdb{padding:0 8px 8px;font-size:12px;color:#c4cad3;line-height:1.4}d
 .pbox h4{margin:0 0 8px;display:flex;align-items:center;gap:8px;font-size:15px}.pbox table td{white-space:normal}.pbox .x{width:32px;height:32px;font-size:15px}
 .bar{height:6px;background:#232a33;border-radius:3px;position:relative;margin:4px 0 2px}.bar i{position:absolute;top:-3px;width:2px;height:12px;background:var(--tx)}
 @media(max-width:640px){header{gap:8px 14px;padding:10px 12px;position:static}.kpi{min-width:0;flex:1 1 40%}.big{flex-basis:100%}.big b{font-size:22px}
- .sw{margin-left:0;width:100%}.sw button{flex:1}main{padding:10px;gap:10px}.row{gap:10px}.card{padding:10px}th,td{padding:4px 5px}.scroll{max-height:65vh}
+ .sw{margin-left:0;width:100%}.sw button,.sw a.term{flex:1}.sw a.term{justify-content:center}main{padding:10px;gap:10px}.row{gap:10px}.card{padding:10px}th,td{padding:4px 5px}.scroll{max-height:65vh}
  #t_health td.l.mu{white-space:normal;min-width:140px}.flt select,.flt input{flex:1 1 45%}.flt label{flex:1 1 45%}.flt label input{flex:1;min-width:0}footer{padding:0 10px 14px}
  .sheet{border-left:0}.sh-b{padding:10px}.kg{grid-template-columns:repeat(2,minmax(0,1fr))}.kg div{min-width:0;overflow-wrap:anywhere}.sh-h{flex-wrap:wrap}}
 </style></head><body>
@@ -63,7 +63,7 @@ details.fd>.fdb{padding:0 8px 8px;font-size:12px;color:#c4cad3;line-height:1.4}d
 <div class="kpi big"><small>Echte Bücher · PnL je eigener Start (nicht addiert)</small><b id="k_real" style="font-size:15px"></b></div>
 <div class="kpi"><small>Bücher nach Status</small><b id="k_cls" style="font-size:12px;font-weight:600"></b></div>
 <div class="kpi"><small>Offene Pos. (aktiv/pausiert)</small><b id="k_open"></b></div>
-<div class="sw"><button id="b_paper" class="on">Paper</button><button id="b_live" disabled title="noch nicht freigeschaltet">Live 🔒</button></div></header>
+<div class="sw"><a class="term" id="to-terminal" href="terminal.html">Terminal</a><button id="b_paper" class="on">Paper</button><button id="b_live" disabled title="noch nicht freigeschaltet">Live 🔒</button></div></header>
 <main id="paperview">
 <div class="row c2"><div class="card"><h3>Echte Bücher: % seit eigenem Start (keine Summe) <span id="genat" class="mu"></span></h3><div class="tf" id="tf_total"></div><div id="ch_total"></div><div class="tfn" id="tfn_total"></div>
 <h3 style="margin-top:12px">Status aller Bücher <span class="mu" style="text-transform:none;letter-spacing:0">Zeile antippen für Details · Lauf/Prüfung ist keine Handelsaktivität</span></h3><div class="scrollx"><table id="t_overview"></table></div><div id="quality"></div></div>
