@@ -968,18 +968,28 @@ function fmtPctFrac(v) {
       var label = pctMode ? ((val > 0 ? "+" : "") + val.toFixed(1).replace(".", ",") + " %") : axisEquity(val);
       ctx.fillText(label, w - 6, y);
     }
-    ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     ctx.fillStyle = "#c8c8c8";
     var span = t1 - t0;
-    var lastLabel = -999;
+    var startText = fmtAxis(bars[0].t, span);
+    var endText = fmtAxis(bars[bars.length - 1].t, span);
+    ctx.textAlign = "left";
+    ctx.fillText(startText, pad.l, h - 6);
+    var startRight = pad.l + ctx.measureText(startText).width + 8;
+    ctx.textAlign = "right";
+    var endAnchor = Math.max(pad.l + 40, Math.min(w - 4, w - 6));
+    ctx.fillText(endText, endAnchor, h - 6);
+    var endLeft = endAnchor - ctx.measureText(endText).width - 8;
+    ctx.textAlign = "center";
+    var lastLabel = startRight;
     bars.forEach(function (b, i) {
+      if (i === 0 || i === bars.length - 1) return;
       var x = xOf(b.ms);
       var text = fmtAxis(b.t, span);
       var tw = ctx.measureText(text).width;
-      if (x - tw / 2 < 2 || x + tw / 2 > w - 2) return;
-      if (x - lastLabel < Math.max(64, tw + 10) && i !== bars.length - 1) return;
-      lastLabel = x;
+      if (x - tw / 2 < startRight || x + tw / 2 > endLeft) return;
+      if (x - lastLabel < Math.max(56, tw + 8)) return;
+      lastLabel = x + tw / 2;
       ctx.fillText(text, x, h - 6);
     });
     if (S.mode === "candle") {
