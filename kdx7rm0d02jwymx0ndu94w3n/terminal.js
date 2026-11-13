@@ -18,6 +18,8 @@
     view: "desk",
     bookId: null,
     series: "book",
+    range: "all",
+    zoom: null,
     mode: "candle",
     dataErr: false,
     lastCheck: null,
@@ -57,7 +59,9 @@
         o: prev,
         h: Math.max(prev, c),
         l: Math.min(prev, c),
-        c: c
+        c: c,
+        carried: !!pts[i].carried,
+        since: pts[i].since || ""
       });
     }
     return out;
@@ -89,6 +93,23 @@
     eq("hide sum null", hideSummedTotals(null), true);
     eq("show explicit sum", hideSummedTotals({ legacy_non_additive: false }), false);
     eq("opens", countOpens([{ open: [{}, {}] }, { open: [] }, { open: [{}] }]), 3);
+    var carried = carryWindow([
+      { ms: 0, v: 100, t: "a" },
+      { ms: 10 * 864e5, v: 90, t: "b" },
+      { ms: 20 * 864e5, v: 90, t: "now" }
+    ], 7 * 864e5);
+    eq("carry len", carried.pts.length, 2);
+    eq("carry start", carried.pts[0].ms, 13 * 864e5);
+    eq("carry label", carried.pts[0].t, new Date(13 * 864e5).toISOString());
+    eq("carry value", carried.pts[0].v, 90);
+    eq("carry trades", carried.trades, 0);
+    var traded = carryWindow([
+      { ms: 0, v: 100, t: "a" },
+      { ms: 18 * 864e5, v: 80, t: "trade" },
+      { ms: 20 * 864e5, v: 80, t: "now" }
+    ], 7 * 864e5);
+    eq("trade count", traded.trades, 2);
+    eq("trade first carried", traded.pts[0].carried, true);
     var candles = stepsToCandles([{ t: "a", ms: 1, v: 10 }, { t: "b", ms: 2, v: 12 }]);
     eq("open", candles[1].o, 10);
     eq("close", candles[1].c, 12);
@@ -751,6 +772,89 @@ function fmtPctFrac(v) {
     return { name: "Combined", pts: seriesPts(S.D.combined) };
   }
 
+  function rangeWindowMs() {
+    if (S.range === "24h") return 864e5;
+    if (S.range === "7d") return 7 * 864e5;
+    if (S.range === "30d") return 30 * 864e5;
+    return Infinity;
+  }
+
+  function carryWindow(pts, windowMs) {
+    if (!pts.length || !isFinite(windowMs)) return { pts: pts.slice(), trades: pts.length };
+    var end = pts[pts.length - 1].ms;
+    var cut = end - windowMs;
+    var prior = null;
+    var inside = [];
+    pts.forEach(function (p) {
+      if (p.ms < cut) prior = p;
+      else inside.push(p);
+    });
+    var out = [];
+    if (prior) out.push({ t: new Date(cut).toISOString(), ms: cut, v: prior.v, carried: true, since: prior.t });
+    else if (inside.length === 1) out.push({ t: new Date(cut).toISOString(), ms: cut, v: inside[0].v, carried: true, since: inside[0].t });
+    inside.forEach(function (p) { out.push(p); });
+    if (out.length && out[out.length - 1].ms < end) {
+      var hold = prior ? prior.v : out[out.length - 1].v;
+      out.push({ t: pts[pts.length - 1].t, ms: end, v: hold, carried: true });
+    }
+    var onlySnapshot = prior && inside.length === 1 && inside[0].ms === end;
+    var noHistory = !prior && inside.length <= 1;
+    var trades = (onlySnapshot || noHistory) ? 0 : inside.length;
+    return { pts: out.length ? out : pts.slice(), trades: trades };
+  }
+
+  function syncBookPick() {
+    var sel = document.getElementById("book-pick");
+    if (!sel) return;
+    var list = books();
+    var ids = list.map(function (b) { return b && b.id; }).join("|");
+    if (sel.dataset.ids !== ids) {
+      sel.innerHTML = list.map(function (b) {
+        if (!b) return "";
+        return '<option value="' + esc(b.id) + '">' + esc(b.name || b.id) + "</option>";
+      }).join("");
+      sel.dataset.ids = ids;
+    }
+    if (S.bookId) sel.value = S.bookId;
+  }
+
+  function axisEquity(v) {
+    if (!Number.isFinite(v)) return "–";
+    return v.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+  }
+
+  function fmtAxis(s, span) {
+    var d = new Date(s);
+    if (Number.isNaN(+d)) return "";
+    var opts = { timeZone: TZ, day: "2-digit", month: "2-digit" };
+    if (span < 3 * 864e5) {
+      opts.hour = "2-digit";
+      opts.minute = "2-digit";
+    }
+    return d.toLocaleString("de-DE", opts);
+  }
+
+  function hideTip() {
+    var tip = document.getElementById("chart-tip");
+    if (tip) tip.hidden = true;
+  }
+
+  function placeTip(host, clientX, clientY, html) {
+    var tip = document.getElementById("chart-tip");
+    if (!tip || !host) return;
+    var rect = host.getBoundingClientRect();
+    tip.hidden = false;
+    tip.innerHTML = html;
+    var x = clientX - rect.left + 14;
+    var y = clientY - rect.top + 14;
+    var tw = tip.offsetWidth || 140;
+    var th = tip.offsetHeight || 44;
+    if (x + tw > rect.width - 4) x = clientX - rect.left - tw - 10;
+    if (y + th > rect.height - 4) y = clientY - rect.top - th - 10;
+    tip.style.left = Math.max(4, x) + "px";
+    tip.style.top = Math.max(4, y) + "px";
+  }
+
   function drawChart() {
     var cv = document.getElementById("chart");
     var host = document.getElementById("chart-host");
@@ -775,22 +879,36 @@ function fmtPctFrac(v) {
       var base = pts[0].v;
       pts = pts.map(function (p) { return { t: p.t, ms: p.ms, v: (p.v / base - 1) * 100 }; });
     }
-    var bars = S.mode === "candle" ? stepsToCandles(src.pts) : pts.map(function (p) {
-      return { t: p.t, ms: p.ms, o: p.v, h: p.v, l: p.v, c: p.v };
+    var basePts = S.mode === "line" ? pts : src.pts;
+    var carried = carryWindow(basePts, rangeWindowMs());
+    var built = S.mode === "candle" ? stepsToCandles(carried.pts) : carried.pts.map(function (p) {
+      return { t: p.t, ms: p.ms, o: p.v, h: p.v, l: p.v, c: p.v, carried: !!p.carried, since: p.since || "" };
     });
-    S.chart = { bars: bars, pct: pctMode, name: src.name };
-    if (!bars.length) {
+    var ranged = built;
+    if (!ranged.length) {
       ctx.fillStyle = "#858585";
-      ctx.font = "12px ui-monospace, monospace";
+      ctx.font = "13px ui-monospace, monospace";
       ctx.fillText("KEINE KURVE", 12, 28);
       if (read) read.textContent = src.name + " · keine Punkte";
+      hideTip();
+      host.dataset.zoomed = "0";
       return;
     }
-    var pad = { l: 8, r: 64, t: 8, b: 18 };
+    var full0 = ranged[0].ms;
+    var full1 = ranged[ranged.length - 1].ms;
+    if (full1 <= full0) full1 = full0 + 60e3;
+    var t0 = full0;
+    var t1 = full1;
+    if (S.zoom) {
+      t0 = Math.max(full0, S.zoom.t0);
+      t1 = Math.min(full1, S.zoom.t1);
+      if (!(t1 > t0)) { t0 = full0; t1 = full1; S.zoom = null; }
+    }
+    var bars = ranged.filter(function (b) { return b.ms >= t0 && b.ms <= t1; });
+    if (!bars.length) bars = ranged.slice();
+    var pad = { l: 8, r: 108, t: 12, b: 26 };
     var plotW = Math.max(10, w - pad.l - pad.r);
     var plotH = Math.max(10, h - pad.t - pad.b);
-    var t0 = bars[0].ms;
-    var t1 = bars[bars.length - 1].ms;
     function xOf(ms) {
       if (t1 === t0) return pad.l + plotW / 2;
       return pad.l + (ms - t0) / (t1 - t0) * plotW;
@@ -805,9 +923,11 @@ function fmtPctFrac(v) {
     var emaPts = [];
     if (S.mode === "candle") {
       var k = 2 / 9;
-      bars.forEach(function (b, i) {
+      var seen = 0;
+      ranged.forEach(function (b) {
         ema = ema == null ? b.c : b.c * k + ema * (1 - k);
-        if (i >= 7) {
+        seen++;
+        if (seen >= 8 && b.ms >= t0 && b.ms <= t1) {
           emaPts.push({ ms: b.ms, v: ema });
           min = Math.min(min, ema);
           max = Math.max(max, ema);
@@ -819,62 +939,86 @@ function fmtPctFrac(v) {
       min -= bump;
       max += bump;
     } else {
-      var span = max - min;
-      min -= span * 0.08;
-      max += span * 0.08;
+      var spanY = max - min;
+      min -= spanY * 0.08;
+      max += spanY * 0.08;
     }
     function yOf(v) {
       return pad.t + (max - v) / (max - min) * plotH;
     }
-    ctx.strokeStyle = "#141414";
+    S.chart = {
+      bars: bars, ranged: ranged, pct: pctMode, name: src.name,
+      t0: t0, t1: t1, full0: full0, full1: full1,
+      pad: pad, plotW: plotW, plotH: plotH, yMin: min, yMax: max,
+      noTrades: isFinite(rangeWindowMs()) && carried.trades === 0
+    };
+    host.dataset.zoomed = S.zoom ? "1" : "0";
+    host.dataset.bars = String(bars.length);
+    host.dataset.note = S.chart.noTrades ? "1" : "0";
+    ctx.font = "12px ui-monospace, monospace";
+    ctx.textBaseline = "middle";
+    ctx.strokeStyle = "#1c1c1c";
     ctx.lineWidth = 1;
-    ctx.fillStyle = "#858585";
-    ctx.font = "10px ui-monospace, monospace";
+    ctx.fillStyle = "#c8c8c8";
     ctx.textAlign = "right";
     for (var g = 0; g <= 4; g++) {
       var val = min + (max - min) * (g / 4);
       var y = yOf(val);
       ctx.beginPath();
       ctx.moveTo(pad.l, y);
-      ctx.lineTo(w - pad.r, y);
+      ctx.lineTo(w - pad.r + 4, y);
       ctx.stroke();
-      var label = pctMode ? ((val > 0 ? "+" : "") + val.toFixed(1).replace(".", ",") + "%") : axisEquity(val);
-      ctx.fillText(label, w - 4, y + 3);
+      var label = pctMode ? ((val > 0 ? "+" : "") + val.toFixed(1).replace(".", ",") + " %") : axisEquity(val);
+      ctx.fillText(label, w - 6, y);
     }
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#c8c8c8";
+    var span = t1 - t0;
+    var startText = fmtAxis(bars[0].t, span);
+    var endText = fmtAxis(bars[bars.length - 1].t, span);
     ctx.textAlign = "left";
-    ctx.fillStyle = "#858585";
-    var lastLabel = -999;
+    ctx.fillText(startText, pad.l, h - 6);
+    var startRight = pad.l + ctx.measureText(startText).width + 8;
+    ctx.textAlign = "right";
+    var endAnchor = Math.max(pad.l + 40, Math.min(w - 4, w - 6));
+    ctx.fillText(endText, endAnchor, h - 6);
+    var endLeft = endAnchor - ctx.measureText(endText).width - 8;
+    ctx.textAlign = "center";
+    var lastLabel = startRight;
     bars.forEach(function (b, i) {
+      if (i === 0 || i === bars.length - 1) return;
       var x = xOf(b.ms);
-      var last = i === bars.length - 1;
-      if (!last && x - lastLabel < 78) return;
-      if (last && x - lastLabel < 50) return;
-      lastLabel = x;
-      ctx.fillText(fmtDay(b.t), x, h - 4);
+      var text = fmtAxis(b.t, span);
+      var tw = ctx.measureText(text).width;
+      if (x - tw / 2 < startRight || x + tw / 2 > endLeft) return;
+      if (x - lastLabel < Math.max(56, tw + 8)) return;
+      lastLabel = x + tw / 2;
+      ctx.fillText(text, x, h - 6);
     });
+    var wantStep = S.range !== "all" || bars.length < 8;
     if (S.mode === "candle") {
       var gaps = [];
       for (var i = 1; i < bars.length; i++) gaps.push(Math.abs(xOf(bars[i].ms) - xOf(bars[i - 1].ms)));
       gaps.sort(function (a, b) { return a - b; });
-      var med = gaps.length ? gaps[gaps.length >> 1] : 8;
-      var cw = Math.max(2, Math.min(14, med * 0.62));
+      var med = gaps.length ? gaps[gaps.length >> 1] : 10;
+      var cw = Math.max(3, Math.min(22, med * 0.62));
       bars.forEach(function (b) {
         var up = b.c >= b.o;
         ctx.strokeStyle = up ? "#3ad08a" : "#ff5c5c";
         ctx.fillStyle = ctx.strokeStyle;
         var x = xOf(b.ms);
+        if (x < pad.l - 2 || x > w - pad.r + 2) return;
         ctx.beginPath();
         ctx.moveTo(x, yOf(b.h));
         ctx.lineTo(x, yOf(b.l));
         ctx.stroke();
         var y1 = yOf(Math.max(b.o, b.c));
         var y2 = yOf(Math.min(b.o, b.c));
-        var bhgt = Math.max(1, y2 - y1);
-        ctx.fillRect(x - cw / 2, y1, cw, bhgt);
+        ctx.fillRect(x - cw / 2, y1, cw, Math.max(1, y2 - y1));
       });
-      if (emaPts.length) {
+      if (emaPts.length && !wantStep) {
         ctx.strokeStyle = "#ffa028";
-        ctx.lineWidth = 1.25;
+        ctx.lineWidth = 1.4;
         ctx.beginPath();
         emaPts.forEach(function (p, i) {
           var x = xOf(p.ms);
@@ -884,70 +1028,212 @@ function fmtPctFrac(v) {
         });
         ctx.stroke();
       }
-    } else {
+    }
+    if (S.mode !== "candle" || wantStep) {
       ctx.strokeStyle = "#ffa028";
-      ctx.lineWidth = 1.6;
+      ctx.lineWidth = 2;
       ctx.beginPath();
       bars.forEach(function (b, i) {
         var x = xOf(b.ms);
         var y = yOf(b.c);
-        if (i) ctx.lineTo(x, y);
-        else ctx.moveTo(x, y);
+        if (!i) ctx.moveTo(x, y);
+        else {
+          ctx.lineTo(x, yOf(bars[i - 1].c));
+          ctx.lineTo(x, y);
+        }
       });
       ctx.stroke();
     }
+    if (S.chart.noTrades) {
+      ctx.fillStyle = "#ffa028";
+      ctx.font = "12px ui-monospace, monospace";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.fillText("keine Trades im Zeitraum", pad.l + 8, pad.t + 6);
+    }
     var hi = S.hover;
-    if (hi != null && bars[hi]) {
-      var hb = bars[hi];
+    var hb = hi != null && bars[hi] ? bars[hi] : null;
+    if (hb) {
       var hx = xOf(hb.ms);
-      ctx.strokeStyle = "#5a5a5a";
+      var hy = yOf(hb.c);
+      ctx.strokeStyle = "#8a8a8a";
       ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
       ctx.beginPath();
       ctx.moveTo(hx, pad.t);
       ctx.lineTo(hx, pad.t + plotH);
+      ctx.moveTo(pad.l, hy);
+      ctx.lineTo(w - pad.r, hy);
       ctx.stroke();
+      ctx.setLineDash([]);
     }
     if (read) {
-      var b = hi != null && bars[hi] ? bars[hi] : bars[bars.length - 1];
-      if (pctMode) {
-        read.innerHTML = "<b>" + esc(src.name) + "</b> " + esc((b.c > 0 ? "+" : "") + b.c.toFixed(2).replace(".", ",") + " %") +
-          ' <span class="muted">' + esc(fmtTs(b.t)) + "</span>";
-      } else {
-        read.innerHTML = "<b>EQ</b> " + esc(src.name) + " <b>O</b> " + axisEquity(b.o) + " <b>H</b> " + axisEquity(b.h) +
-          " <b>L</b> " + axisEquity(b.l) + " <b>C</b> " + axisEquity(b.c) + ' <span class="muted">' + esc(fmtTs(b.t)) + "</span>";
+      var show = hb || bars[bars.length - 1];
+      var valTxt = pctMode
+        ? ((show.c > 0 ? "+" : "") + show.c.toFixed(2).replace(".", ",") + " %")
+        : axisEquity(show.c);
+      read.innerHTML = "<b>" + esc(src.name) + "</b> " + esc(valTxt) + ' <span class="muted">' + esc(fmtTs(show.t)) + "</span>";
+    }
+    if (hb && S.tipPos) {
+      var tipVal = pctMode
+        ? ((hb.c > 0 ? "+" : "") + hb.c.toFixed(2).replace(".", ",") + " %")
+        : axisEquity(hb.c);
+      var since = hb.carried && hb.since ? "<br>Stand seit " + esc(fmtDay(hb.since)) : "";
+      placeTip(host, S.tipPos.x, S.tipPos.y, "<b>" + esc(fmtTs(hb.t)) + "</b><br>" + esc(src.name) + " " + esc(tipVal) + since);
+    } else hideTip();
+  }
+
+  function nearestBar(clientX) {
+    var c = S.chart;
+    var host = document.getElementById("chart-host");
+    if (!c || !c.bars || !c.bars.length || !host) return null;
+    var rect = host.getBoundingClientRect();
+    var x = clientX - rect.left;
+    var ratio = c.plotW ? (x - c.pad.l) / c.plotW : 0;
+    ratio = Math.max(0, Math.min(1, ratio));
+    var target = c.t0 + ratio * (c.t1 - c.t0);
+    var best = 0;
+    var bestD = Infinity;
+    for (var i = 0; i < c.bars.length; i++) {
+      var d = Math.abs(c.bars[i].ms - target);
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    return best;
+  }
+
+  function applyZoom(t0, t1) {
+    var c = S.chart;
+    if (!c) return;
+    var span = t1 - t0;
+    var full = c.full1 - c.full0;
+    if (span >= full - 1000) { S.zoom = null; drawChart(); return; }
+    if (t0 < c.full0) { t1 += c.full0 - t0; t0 = c.full0; }
+    if (t1 > c.full1) { t0 -= t1 - c.full1; t1 = c.full1; }
+    t0 = Math.max(c.full0, t0);
+    t1 = Math.min(c.full1, t1);
+    if (t1 - t0 < 60e3) return;
+    S.zoom = { t0: t0, t1: t1 };
+    drawChart();
+  }
+
+  function zoomAt(clientX, factor) {
+    var c = S.chart;
+    var host = document.getElementById("chart-host");
+    if (!c || !host) return;
+    var rect = host.getBoundingClientRect();
+    var ratio = c.plotW ? ((clientX - rect.left) - c.pad.l) / c.plotW : 0.5;
+    ratio = Math.max(0, Math.min(1, ratio));
+    var span = (c.t1 - c.t0) * factor;
+    var focus = c.t0 + ratio * (c.t1 - c.t0);
+    applyZoom(focus - ratio * span, focus - ratio * span + span);
+  }
+
+  var chartPointers = {};
+  var chartDrag = null;
+  var chartPinch = null;
+
+  function showTipAt(clientX, clientY) {
+    S.tipPos = { x: clientX, y: clientY };
+    var best = nearestBar(clientX);
+    if (best == null) return;
+    S.hover = best;
+    drawChart();
+  }
+
+  function onChartPointerDown(ev) {
+    var host = ev.currentTarget;
+    chartPointers[ev.pointerId] = { x: ev.clientX, y: ev.clientY };
+    var ids = Object.keys(chartPointers);
+    if (ids.length === 1 && S.chart) {
+      chartDrag = { x: ev.clientX, y: ev.clientY, t0: S.chart.t0, t1: S.chart.t1, moved: false, axis: "" };
+      chartPinch = null;
+      S.tipPinned = false;
+    } else if (ids.length === 2 && S.chart) {
+      var a = chartPointers[ids[0]], b = chartPointers[ids[1]];
+      chartPinch = { dist: Math.hypot(a.x - b.x, a.y - b.y) || 1, t0: S.chart.t0, t1: S.chart.t1, mid: (a.x + b.x) / 2 };
+      chartDrag = null;
+      if (host.setPointerCapture) {
+        try { host.setPointerCapture(ev.pointerId); } catch (e) { /* ignore */ }
       }
     }
   }
 
-  function axisEquity(v) {
-    if (!Number.isFinite(v)) return "–";
-    if (Math.abs(v) >= 1000) return Math.round(v).toLocaleString("de-DE");
-    return v.toLocaleString("de-DE", { maximumFractionDigits: 2 });
+  function onChartPointerMove(ev) {
+    if (chartPointers[ev.pointerId]) chartPointers[ev.pointerId] = { x: ev.clientX, y: ev.clientY };
+    var ids = Object.keys(chartPointers);
+    if (ids.length >= 2 && chartPinch && S.chart) {
+      var a = chartPointers[ids[0]], b = chartPointers[ids[1]];
+      var dist = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+      var factor = chartPinch.dist / dist;
+      var span = (chartPinch.t1 - chartPinch.t0) * factor;
+      var host = ev.currentTarget;
+      var rect = host.getBoundingClientRect();
+      var ratio = S.chart.plotW ? (chartPinch.mid - rect.left - S.chart.pad.l) / S.chart.plotW : 0.5;
+      ratio = Math.max(0, Math.min(1, ratio));
+      var focus = chartPinch.t0 + ratio * (chartPinch.t1 - chartPinch.t0);
+      applyZoom(focus - ratio * span, focus + (1 - ratio) * span);
+      return;
+    }
+    if (chartDrag && ids.length === 1 && S.chart) {
+      var dx = ev.clientX - chartDrag.x;
+      var dy = ev.clientY - chartDrag.y;
+      if (!chartDrag.axis) {
+        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) chartDrag.axis = "y";
+        else if (Math.abs(dx) > 8 && Math.abs(dx) >= Math.abs(dy)) chartDrag.axis = "x";
+      }
+      if (chartDrag.axis === "y") return;
+      if (chartDrag.axis === "x") {
+        chartDrag.moved = true;
+        S.tipPinned = false;
+        if (ev.currentTarget.setPointerCapture) {
+          try { ev.currentTarget.setPointerCapture(ev.pointerId); } catch (e) { /* ignore */ }
+        }
+        if (S.chart.plotW) {
+          var shift = -dx / S.chart.plotW * (chartDrag.t1 - chartDrag.t0);
+          applyZoom(chartDrag.t0 + shift, chartDrag.t1 + shift);
+        }
+        return;
+      }
+    }
+    if (ev.pointerType === "touch") return;
+    S.tipPinned = false;
+    showTipAt(ev.clientX, ev.clientY);
   }
 
-  function onChartMove(ev) {
-    var chart = S.chart;
-    if (!chart || !chart.bars || !chart.bars.length) return;
-    var host = ev.currentTarget;
-    var rect = host.getBoundingClientRect();
-    var x = ev.clientX - rect.left;
-    var padL = 8;
-    var padR = 64;
-    var plotW = Math.max(10, rect.width - padL - padR);
-    var t0 = chart.bars[0].ms;
-    var t1 = chart.bars[chart.bars.length - 1].ms;
-    var ratio = plotW ? (x - padL) / plotW : 0;
-    var target = t0 + Math.max(0, Math.min(1, ratio)) * (t1 - t0);
-    var best = 0;
-    var bestD = Infinity;
-    for (var i = 0; i < chart.bars.length; i++) {
-      var d = Math.abs(chart.bars[i].ms - target);
-      if (d < bestD) { bestD = d; best = i; }
+  function onChartPointerUp(ev) {
+    finishChartPointer(ev, false);
+  }
+
+  function onChartPointerCancel(ev) {
+    finishChartPointer(ev, true);
+  }
+
+  function finishChartPointer(ev, cancelled) {
+    var tapped = !cancelled && chartDrag && !chartDrag.moved && chartDrag.axis !== "x" && chartDrag.axis !== "y";
+    delete chartPointers[ev.pointerId];
+    if (Object.keys(chartPointers).length < 2) chartPinch = null;
+    if (cancelled) S.tipPinned = false;
+    if (tapped) {
+      S.tipPinned = true;
+      showTipAt(ev.clientX, ev.clientY);
     }
-    if (S.hover !== best) {
-      S.hover = best;
-      drawChart();
-    }
+    if (!Object.keys(chartPointers).length) chartDrag = null;
+  }
+
+  function onChartLeave(ev) {
+    if (S.tipPinned && ev && ev.pointerType !== "mouse") return;
+    if (chartDrag && chartDrag.moved) return;
+    if (ev && ev.pointerType === "touch") return;
+    S.hover = null;
+    S.tipPos = null;
+    S.tipPinned = false;
+    hideTip();
+    drawChart();
+  }
+
+  function onChartWheel(ev) {
+    ev.preventDefault();
+    zoomAt(ev.clientX, ev.deltaY > 0 ? 1.2 : 1 / 1.2);
   }
 
   function markSeg() {
@@ -1008,6 +1294,7 @@ function fmtPctFrac(v) {
     if (found) {
       S.bookId = found.id;
       S.series = "book";
+      S.zoom = null;
       setView("desk");
       render();
       flash(found.id);
@@ -1026,6 +1313,7 @@ function fmtPctFrac(v) {
     var hideSum = !S.D || hideSummedTotals(S.D.total);
     if (seg) seg.hidden = hideSum;
     if (hideSum) S.series = "book";
+    syncBookPick();
     renderStrip();
     renderBooks("books", books());
     renderRegime();
@@ -1216,7 +1504,9 @@ function fmtPctFrac(v) {
       var seg = ev.target.closest && ev.target.closest("[data-set]");
       if (seg && seg.dataset.set) {
         S[seg.dataset.set] = seg.dataset.val;
+        if (seg.dataset.set === "range" || seg.dataset.set === "series" || seg.dataset.set === "mode") S.zoom = null;
         S.hover = null;
+        S.tipPos = null;
         markSeg();
         drawChart();
         return;
@@ -1225,7 +1515,9 @@ function fmtPctFrac(v) {
       if (book && book.dataset.book) {
         S.bookId = book.dataset.book;
         S.series = "book";
+        S.zoom = null;
         S.hover = null;
+        S.tipPos = null;
         render();
       }
     });
@@ -1249,13 +1541,28 @@ function fmtPctFrac(v) {
     });
     var host = document.getElementById("chart-host");
     if (host) {
-      host.addEventListener("pointermove", onChartMove);
-      host.addEventListener("pointerleave", function () { S.hover = null; drawChart(); });
+      host.addEventListener("pointerdown", onChartPointerDown);
+      host.addEventListener("pointermove", onChartPointerMove);
+      host.addEventListener("pointerup", onChartPointerUp);
+      host.addEventListener("pointercancel", onChartPointerCancel);
+      host.addEventListener("pointerleave", onChartLeave);
+      host.addEventListener("wheel", onChartWheel, { passive: false });
       if (typeof ResizeObserver !== "undefined") {
         var ro = new ResizeObserver(function () { drawChart(); });
         ro.observe(host);
       }
     }
+    var reset = document.getElementById("zoom-reset");
+    if (reset) reset.addEventListener("click", function () { S.zoom = null; S.hover = null; drawChart(); });
+    var pick = document.getElementById("book-pick");
+    if (pick) pick.addEventListener("change", function () {
+      S.bookId = pick.value;
+      S.series = "book";
+      S.zoom = null;
+      S.hover = null;
+      S.tipPos = null;
+      render();
+    });
     window.addEventListener("resize", function () {
       clearTimeout(S.rz);
       S.rz = setTimeout(drawChart, 80);
@@ -1273,5 +1580,5 @@ function fmtPctFrac(v) {
     setTimeout(function () { check(); }, 1500);
   }
 
-  return { boot: boot, gateState: gateState, stepsToCandles: stepsToCandles, selftest: selftest, numOrNull: numOrNull, isLiveAlarm: isLiveAlarm, hideSummedTotals: hideSummedTotals, countOpens: countOpens };
+  return { boot: boot, gateState: gateState, stepsToCandles: stepsToCandles, selftest: selftest, numOrNull: numOrNull, isLiveAlarm: isLiveAlarm, hideSummedTotals: hideSummedTotals, countOpens: countOpens, carryWindow: carryWindow };
 });

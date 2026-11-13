@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Paper-Desk Terminal</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Crect x='2' y='2' width='12' height='12' fill='none' stroke='%23ffa028'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="terminal.css?v=2">
+<link rel="stylesheet" href="terminal.css?v=5">
 <!--
   Look adapted from the Classifier Trading Terminal in
   https://github.com/zadescoxp/calibrain-harness
@@ -18,6 +18,7 @@
 <body>
 <div class="clocks" id="clocks"></div>
 <header class="cmdbar">
+  <a class="back-desk" id="back-desk" href="index.html">← Desk <span>Zurück zum Desk</span></a>
   <div class="brand" title="Paper-Desk Terminal. Nur Anzeige, keine Orders.">
     <span class="brand-mark">P</span>
     <span class="brand-name">PAPER DESK</span>
@@ -52,19 +53,29 @@
       <div class="pb tight scroll" id="books" data-scroll></div>
     </section>
     <section class="pnl a-chart">
-      <div class="ph">
+      <div class="ph chart-ph">
         <span class="code">EQ</span>EQUITY
+        <label class="book-pick">BUCH
+          <select id="book-pick" aria-label="Buch für die Equity-Kurve"></select>
+        </label>
         <span class="seg" id="seg-series">
           <button type="button" data-set="series" data-val="comb">COMB</button>
           <button type="button" data-set="series" data-val="book">BOOK</button>
+        </span>
+        <span class="seg" id="seg-range">
+          <button type="button" data-set="range" data-val="24h">24h</button>
+          <button type="button" data-set="range" data-val="7d">7d</button>
+          <button type="button" data-set="range" data-val="30d">30d</button>
+          <button type="button" data-set="range" data-val="all">All</button>
         </span>
         <span class="seg">
           <button type="button" data-set="mode" data-val="candle">CANDLE</button>
           <button type="button" data-set="mode" data-val="line">LINE</button>
         </span>
+        <button type="button" class="mini" id="zoom-reset">RESET</button>
         <span class="ph-r ohlc" id="ohlc"></span>
       </div>
-      <div class="pb chart-wrap"><div class="chart-host" id="chart-host"><canvas id="chart"></canvas></div></div>
+      <div class="pb chart-wrap"><div class="chart-host" id="chart-host"><canvas id="chart"></canvas><div id="chart-tip" class="chart-tip" hidden></div></div></div>
     </section>
     <section class="pnl a-regime">
       <div class="ph"><span class="code">RG</span>REGIME<span class="ph-r">BTC FILTER</span></div>
@@ -109,6 +120,6 @@
 </section>
 
 <footer class="statusline" id="status"></footer>
-<script src="terminal.js?v=3"></script>
+<script src="terminal.js?v=8"></script>
 </body>
 </html>
