@@ -80,6 +80,10 @@
     eq("dsr edge", gateState(0.95, ">", 0.95).pass, false);
     eq("pbo edge", gateState(0.3, "<", 0.3).pass, false);
     eq("bad number", gateState("x", ">", 1).pass, null);
+    eq("alarm live", isLiveAlarm({ valid: true }), true);
+    eq("alarm missing", isLiveAlarm({ kind: "FEED" }), true);
+    eq("alarm false", isLiveAlarm({ valid: false }), false);
+    eq("alarm empty", isLiveAlarm(null), false);
     var candles = stepsToCandles([{ t: "a", ms: 1, v: 10 }, { t: "b", ms: 2, v: 12 }]);
     eq("open", candles[1].o, 10);
     eq("close", candles[1].c, 12);
@@ -281,6 +285,17 @@ function fmtPctFrac(v) {
     return '<span class="' + cls + '">' + text + "</span>" + diag;
   }
 
+  function isLiveAlarm(a) {
+    return !!a && typeof a === "object" && a.valid !== false;
+  }
+
+  function alarmText(a) {
+    var why = a && a.why ? String(a.why) : "";
+    var extra = a && a.invalid_why ? String(a.invalid_why) : "";
+    if (why && extra) return why + " · " + extra;
+    return why || extra;
+  }
+
   function logRows() {
     var rows = [];
     if (!S.D) return rows;
@@ -293,14 +308,29 @@ function fmtPctFrac(v) {
         text: a.text || a.msg || a.message || a.why || ""
       });
     });
-    var ops = S.D.ops || {};
-    arr(ops.alarms).forEach(function (a) {
-      if (!a || typeof a !== "object") return;
+    arr((S.D.ops || {}).alarms).forEach(function (a) {
+      if (!isLiveAlarm(a)) return;
       rows.push({
         t: a.at || "",
         src: a.book || "OPS",
         kind: a.kind || "ALARM",
-        text: a.why || ""
+        text: alarmText(a)
+      });
+    });
+    rows.sort(function (a, b) { return String(b.t).localeCompare(String(a.t)); });
+    return rows;
+  }
+
+  function falseAlarmRows() {
+    var rows = [];
+    if (!S.D) return rows;
+    arr((S.D.ops || {}).alarms).forEach(function (a) {
+      if (!a || typeof a !== "object" || a.valid !== false) return;
+      rows.push({
+        t: a.at || "",
+        src: a.book || "OPS",
+        kind: "FEHLALARM",
+        text: alarmText(a)
       });
     });
     rows.sort(function (a, b) { return String(b.t).localeCompare(String(a.t)); });
@@ -563,7 +593,9 @@ function fmtPctFrac(v) {
           td("N", fmtInt(g && g.n), "r") + td("Zuletzt", fmtTs(g && g.last)) +
           td("Detail", '<span class="clip" title="' + esc(detail) + '">' + esc(detail || "–") + "</span>", "clip") + "</tr>";
       }).join("") + "</tbody></table>" : '<div class="empty"><b>KEINE DATEN</b>Keine Schutzregeln in 24 h.</div>';
-    el.innerHTML = panel("LG", "ALERTS", logTable(logRows())) + panel("GD", "GUARDS 24H", gHtml);
+    var falseRows = falseAlarmRows();
+    var falseHtml = falseRows.length ? panel("FA", "FEHLALARM", logTable(falseRows), String(falseRows.length)) : "";
+    el.innerHTML = panel("LG", "ALERTS", logTable(logRows())) + falseHtml + panel("GD", "GUARDS 24H", gHtml);
   }
 
   function factoryAbsent(title, text) {
@@ -1207,5 +1239,5 @@ function fmtPctFrac(v) {
     setTimeout(function () { check(); }, 1500);
   }
 
-  return { boot: boot, gateState: gateState, stepsToCandles: stepsToCandles, selftest: selftest, numOrNull: numOrNull };
+  return { boot: boot, gateState: gateState, stepsToCandles: stepsToCandles, selftest: selftest, numOrNull: numOrNull, isLiveAlarm: isLiveAlarm };
 });
