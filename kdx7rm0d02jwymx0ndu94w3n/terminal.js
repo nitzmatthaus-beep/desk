@@ -17,7 +17,7 @@
     fState: "load",
     view: "desk",
     bookId: null,
-    series: "comb",
+    series: "book",
     mode: "candle",
     dataErr: false,
     lastCheck: null,
@@ -84,6 +84,11 @@
     eq("alarm missing", isLiveAlarm({ kind: "FEED" }), true);
     eq("alarm false", isLiveAlarm({ valid: false }), false);
     eq("alarm empty", isLiveAlarm(null), false);
+    eq("hide sum flag", hideSummedTotals({ legacy_non_additive: true }), true);
+    eq("hide sum missing", hideSummedTotals({}), true);
+    eq("hide sum null", hideSummedTotals(null), true);
+    eq("show explicit sum", hideSummedTotals({ legacy_non_additive: false }), false);
+    eq("opens", countOpens([{ open: [{}, {}] }, { open: [] }, { open: [{}] }]), 3);
     var candles = stepsToCandles([{ t: "a", ms: 1, v: 10 }, { t: "b", ms: 2, v: 12 }]);
     eq("open", candles[1].o, 10);
     eq("close", candles[1].c, 12);
@@ -285,6 +290,17 @@ function fmtPctFrac(v) {
     return '<span class="' + cls + '">' + text + "</span>" + diag;
   }
 
+  function hideSummedTotals(total) {
+    if (!total) return true;
+    return total.legacy_non_additive !== false;
+  }
+
+  function countOpens(list) {
+    var n = 0;
+    arr(list).forEach(function (b) { n += arr(b && b.open).length; });
+    return n;
+  }
+
   function isLiveAlarm(a) {
     return !!a && typeof a === "object" && a.valid !== false;
   }
@@ -380,24 +396,34 @@ function fmtPctFrac(v) {
       "<tbody>" + bookRows(list) + "</tbody></table>";
   }
 
+  function stripCell(label, value, sub, raw) {
+    var cls = raw == null ? "" : clsSign(raw);
+    return '<div class="cell"><div class="l">' + esc(label) + '</div><div class="n ' + cls + '">' + value + '</div><div class="s">' + esc(sub || "") + "</div></div>";
+  }
+
   function renderStrip() {
     var el = document.getElementById("strip");
     if (!el) return;
-    var t = (S.D && S.D.total) || {};
-    var cells = [
-      ["Equity", eur(t.equity), "veröffentlicht"],
-      ["PnL", sgnEur(t.pnl), t.legacy_non_additive ? "Summe laut Datei" : "seit Start"],
-      ["PnL 24h", sgnEur(t.pnl24), t.pnl24_src || ""],
-      ["PnL 7d", sgnEur(t.pnl7d), t.pnl7d_src || ""],
-      ["Max DD", pct(t.maxdd), "gesamt"],
-      ["Open", fmtInt(t.n_open), "in der Summe"],
-      ["Bücher", fmtInt(t.n_books), books().length + " geladen"]
-    ];
-    el.innerHTML = cells.map(function (c) {
-      var cls = "";
-      if (c[0].indexOf("PnL") === 0 || c[0] === "Max DD") cls = clsSign(c[0] === "Max DD" ? t.maxdd : (c[0] === "PnL" ? t.pnl : c[0] === "PnL 24h" ? t.pnl24 : t.pnl7d));
-      return '<div class="cell"><div class="l">' + esc(c[0]) + '</div><div class="n ' + cls + '">' + c[1] + '</div><div class="s">' + esc(c[2] || "") + "</div></div>";
-    }).join("");
+    var opens = countOpens(books());
+    var nBooks = books().length;
+    var html;
+    if (S.D && !hideSummedTotals(S.D.total)) {
+      var t = S.D.total;
+      html = stripCell("Equity", eur(t.equity), "Summe") +
+        stripCell("PnL", sgnEur(t.pnl), "seit Start", t.pnl) +
+        stripCell("PnL 24h", sgnEur(t.pnl24), t.pnl24_src || "", t.pnl24) +
+        stripCell("PnL 7d", sgnEur(t.pnl7d), t.pnl7d_src || "", t.pnl7d) +
+        stripCell("Max DD", pct(t.maxdd), "gesamt", t.maxdd) +
+        stripCell("Open", fmtInt(opens), "gelistet") +
+        stripCell("Bücher", fmtInt(nBooks), "geladen");
+    } else {
+      var main = bookById("main") || bookById(S.bookId) || books()[0] || null;
+      html = stripCell("Main", eur(main && main.equity), main ? (main.name || main.id) : "je Buch") +
+        stripCell("PnL", sgnEur(main && main.pnl), "eigener Start", main && main.pnl) +
+        stripCell("Open", fmtInt(opens), "alle Bücher") +
+        stripCell("Bücher", fmtInt(nBooks), "geladen");
+    }
+    el.innerHTML = html;
   }
 
   function renderRegime() {
@@ -439,7 +465,7 @@ function fmtPctFrac(v) {
       });
     });
     var count = document.getElementById("pos-count");
-    if (count) count.textContent = String(rows.length);
+    if (count) count.textContent = String(countOpens(books()));
     if (!rows.length) {
       el.innerHTML = '<div class="empty"><b>KEINE DATEN</b>Keine offenen Positionen.</div>';
       return;
@@ -712,10 +738,14 @@ function fmtPctFrac(v) {
       (notesHtml ? panel("NT", "NOTES", notesHtml) : "");
   }
 
+  function useBookCurve() {
+    return !S.D || hideSummedTotals(S.D.total) || S.series !== "comb";
+  }
+
   function sourceSeries() {
     if (!S.D) return { name: "–", pts: [] };
-    if (S.series === "book") {
-      var b = bookById(S.bookId);
+    if (useBookCurve()) {
+      var b = bookById(S.bookId) || bookById("main") || books()[0];
       return { name: b ? (b.name || b.id) : "Buch", pts: seriesPts(b && b.curve) };
     }
     return { name: "Combined", pts: seriesPts(S.D.combined) };
@@ -992,6 +1022,10 @@ function fmtPctFrac(v) {
     if (bk) bk.textContent = books().length ? String(books().length) : "–";
     var sec = document.getElementById("cmd-sec");
     if (sec) sec.textContent = S.bookId || "PAPER";
+    var seg = document.getElementById("seg-series");
+    var hideSum = !S.D || hideSummedTotals(S.D.total);
+    if (seg) seg.hidden = hideSum;
+    if (hideSum) S.series = "book";
     renderStrip();
     renderBooks("books", books());
     renderRegime();
@@ -1239,5 +1273,5 @@ function fmtPctFrac(v) {
     setTimeout(function () { check(); }, 1500);
   }
 
-  return { boot: boot, gateState: gateState, stepsToCandles: stepsToCandles, selftest: selftest, numOrNull: numOrNull, isLiveAlarm: isLiveAlarm };
+  return { boot: boot, gateState: gateState, stepsToCandles: stepsToCandles, selftest: selftest, numOrNull: numOrNull, isLiveAlarm: isLiveAlarm, hideSummedTotals: hideSummedTotals, countOpens: countOpens };
 });

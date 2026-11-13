@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Paper-Desk Terminal</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Crect x='2' y='2' width='12' height='12' fill='none' stroke='%23ffa028'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="terminal.css?v=1">
+<link rel="stylesheet" href="terminal.css?v=2">
 <!--
   Look adapted from the Classifier Trading Terminal in
   https://github.com/zadescoxp/calibrain-harness
@@ -54,7 +54,7 @@
     <section class="pnl a-chart">
       <div class="ph">
         <span class="code">EQ</span>EQUITY
-        <span class="seg">
+        <span class="seg" id="seg-series">
           <button type="button" data-set="series" data-val="comb">COMB</button>
           <button type="button" data-set="series" data-val="book">BOOK</button>
         </span>
@@ -109,6 +109,6 @@
 </section>
 
 <footer class="statusline" id="status"></footer>
-<script src="terminal.js?v=2"></script>
+<script src="terminal.js?v=3"></script>
 </body>
 </html>

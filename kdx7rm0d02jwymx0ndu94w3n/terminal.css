@@ -172,6 +172,7 @@ table.t { width: 100%; border-collapse: collapse; }
 .note { color: var(--text-2); font-size: 11px; white-space: normal; padding: 6px 8px; line-height: 1.4; }
 
 .seg { display: flex; gap: 1px; }
+.seg[hidden] { display: none; }
 .seg button { background: #000; border: 1px solid var(--line); color: var(--muted); font: 500 11px var(--mono); padding: 0 6px; height: 16px; line-height: 14px; }
 .seg button.on { color: #000; background: var(--amber); border-color: var(--amber); }
 
