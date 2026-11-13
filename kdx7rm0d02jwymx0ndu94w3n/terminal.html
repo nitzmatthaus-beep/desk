@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Paper-Desk Terminal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23000'/%3E%3Crect x='2' y='2' width='12' height='12' fill='none' stroke='%23ffa028'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="terminal.css?v=1">
+<!--
+  Look adapted from the Classifier Trading Terminal in
+  https://github.com/zadescoxp/calibrain-harness
+  Copyright (c) 2026 zadescoxp and Calibrain Harness contributors, MIT License.
+  The full permission notice is in terminal.css.
+-->
+</head>
+<body>
+<div class="clocks" id="clocks"></div>
+<header class="cmdbar">
+  <div class="brand" title="Paper-Desk Terminal. Nur Anzeige, keine Orders.">
+    <span class="brand-mark">P</span>
+    <span class="brand-name">PAPER DESK</span>
+    <span class="brand-tag">PAPER</span>
+  </div>
+  <form class="cmd" id="cmd-form" autocomplete="off">
+    <span class="cmd-sec" id="cmd-sec">PAPER</span>
+    <input id="cmd" spellcheck="false" placeholder="Buch · DESK · FACTORY · HEALTH · LOG · HELP" aria-label="Befehl">
+    <button class="go" type="submit">GO</button>
+  </form>
+  <div class="cmd-right">
+    <a class="kbtn amber" id="to-desk" href="index.html">DESK</a>
+  </div>
+</header>
+<nav class="fkeys" aria-label="Ansichten">
+  <button type="button" data-view="desk"><b>F1</b>DESK</button>
+  <button type="button" data-view="books"><b>F2</b>BOOKS</button>
+  <button type="button" data-view="factory"><b>F3</b>FACTORY</button>
+  <button type="button" data-view="health"><b>F4</b>HEALTH</button>
+  <button type="button" data-view="log"><b>F5</b>LOG</button>
+  <span class="fk-spacer"></span>
+  <span class="venue">VENUE <b>PAPER</b> · ORDERS <b>AUS</b> · QUELLE <b>data.json</b></span>
+</nav>
+<div id="booterr" class="alert crit" hidden></div>
+<div id="hint" class="alert" hidden></div>
+
+<section id="view-desk" class="view on">
+  <div class="strip" id="strip"></div>
+  <div class="grid-desk">
+    <section class="pnl a-books">
+      <div class="ph"><span class="code">BK</span>BOOKS<span class="ph-r" id="bk-count">–</span></div>
+      <div class="pb tight scroll" id="books" data-scroll></div>
+    </section>
+    <section class="pnl a-chart">
+      <div class="ph">
+        <span class="code">EQ</span>EQUITY
+        <span class="seg">
+          <button type="button" data-set="series" data-val="comb">COMB</button>
+          <button type="button" data-set="series" data-val="book">BOOK</button>
+        </span>
+        <span class="seg">
+          <button type="button" data-set="mode" data-val="candle">CANDLE</button>
+          <button type="button" data-set="mode" data-val="line">LINE</button>
+        </span>
+        <span class="ph-r ohlc" id="ohlc"></span>
+      </div>
+      <div class="pb chart-wrap"><div class="chart-host" id="chart-host"><canvas id="chart"></canvas></div></div>
+    </section>
+    <section class="pnl a-regime">
+      <div class="ph"><span class="code">RG</span>REGIME<span class="ph-r">BTC FILTER</span></div>
+      <div class="pb tight scroll" id="regime" data-scroll></div>
+    </section>
+    <section class="pnl a-pos">
+      <div class="ph"><span class="code">PS</span>OPEN<span class="ph-r" id="pos-count">–</span></div>
+      <div class="pb tight scroll" id="pos" data-scroll></div>
+    </section>
+    <section class="pnl a-heat">
+      <div class="ph"><span class="code">HM</span>HEATMAP<span class="ph-r">RET JE BUCH</span></div>
+      <div class="pb tight scroll" id="heat" data-scroll></div>
+    </section>
+    <section class="pnl a-health">
+      <div class="ph"><span class="code">SY</span>HEALTH<span class="ph-r" id="health-count">–</span></div>
+      <div class="pb tight scroll" id="health" data-scroll></div>
+    </section>
+    <section class="pnl a-log">
+      <div class="ph"><span class="code">LG</span>LOG<span class="ph-r" id="log-count">–</span></div>
+      <div class="pb tight scroll" id="log" data-scroll></div>
+    </section>
+  </div>
+</section>
+
+<section id="view-books" class="view">
+  <section class="pnl">
+    <div class="ph"><span class="code">BK</span>BOOKS<span class="ph-r">Zeile wählt das Buch für F1</span></div>
+    <div class="pb tight scroll" id="books-full" data-scroll></div>
+  </section>
+</section>
+
+<section id="view-factory" class="view">
+  <div id="factory"></div>
+</section>
+
+<section id="view-health" class="view">
+  <div class="stack" id="health-full"></div>
+</section>
+
+<section id="view-log" class="view">
+  <div class="stack" id="log-full"></div>
+</section>
+
+<footer class="statusline" id="status"></footer>
+<script src="terminal.js?v=1"></script>
+</body>
+</html>
