@@ -47,7 +47,7 @@
   --cond: "Arial Narrow", "Roboto Condensed", "Liberation Sans", "Helvetica Neue", system-ui, sans-serif;
 }
 * { box-sizing: border-box; }
-html, body { background: var(--bg); }
+html, body { background: var(--bg); overflow-x: hidden; max-width: 100%; }
 body {
   margin: 0;
   color: var(--text);
@@ -89,6 +89,9 @@ a:hover { text-decoration: underline; }
 .kbtn { background: var(--bar); color: var(--text-2); border: 1px solid var(--line); padding: 3px 9px; letter-spacing: .04em; font-weight: 500; display: inline-flex; align-items: center; }
 a.kbtn:hover { text-decoration: none; color: var(--text); border-color: var(--muted); }
 .kbtn.amber { background: var(--amber); color: #000; border-color: var(--amber); font-weight: 700; }
+.back-desk { display: inline-flex; align-items: center; gap: 8px; background: var(--amber); color: #000; font: 700 15px/1 var(--cond); letter-spacing: .03em; padding: 8px 12px; border: 1px solid var(--amber); text-decoration: none; white-space: nowrap; }
+.back-desk span { font-weight: 600; }
+.back-desk:hover { text-decoration: none; background: #ffc46a; color: #000; }
 
 .fkeys { display: flex; gap: 2px; padding: 3px 8px; background: #000; border-bottom: 1px solid var(--line); overflow-x: auto; align-items: center; }
 .fkeys button { background: var(--bar); color: var(--text-2); border: 0; padding: 3px 10px 3px 4px; font-weight: 500; letter-spacing: .05em; white-space: nowrap; }
@@ -129,9 +132,9 @@ a.kbtn:hover { text-decoration: none; color: var(--text); border-color: var(--mu
   margin: 4px 8px 8px;
   min-height: 0;
   flex: 1;
-  grid-template-columns: minmax(240px, 0.92fr) minmax(0, 1.5fr) minmax(220px, 0.86fr);
-  grid-template-rows: minmax(0, 1.35fr) minmax(0, 1fr) minmax(92px, 0.58fr);
-  grid-template-areas: "books chart regime" "pos heat health" "log log log";
+  grid-template-columns: minmax(200px, 0.9fr) minmax(0, 1.15fr) minmax(200px, 0.9fr);
+  grid-template-rows: minmax(360px, 1.75fr) minmax(150px, 0.85fr) minmax(120px, 0.7fr);
+  grid-template-areas: "chart chart chart" "books heat regime" "pos health log";
 }
 .a-books { grid-area: books; }
 .a-chart { grid-area: chart; }
@@ -171,13 +174,21 @@ table.t { width: 100%; border-collapse: collapse; }
 .kv .v { text-align: right; }
 .note { color: var(--text-2); font-size: 11px; white-space: normal; padding: 6px 8px; line-height: 1.4; }
 
-.seg { display: flex; gap: 1px; }
+.seg { display: flex; gap: 1px; flex-wrap: wrap; }
 .seg[hidden] { display: none; }
+.chart-ph { height: auto; min-height: 28px; flex-wrap: wrap; white-space: normal; overflow: visible; padding: 4px 6px 4px 0; row-gap: 4px; }
+.chart-ph .code { height: auto; align-self: stretch; min-height: 22px; }
+.book-pick { display: inline-flex; align-items: center; gap: 6px; color: var(--amber); font: 600 11px var(--cond); letter-spacing: .06em; min-width: 0; }
+.book-pick select { background: #000; color: var(--text); border: 1px solid var(--amber-dim); font: 12px var(--mono); max-width: min(220px, 46vw); padding: 2px 4px; }
+.mini { background: #000; color: var(--amber); border: 1px solid var(--amber-dim); padding: 0 6px; font-size: 11px; height: 18px; line-height: 16px; }
+.mini:hover { background: var(--amber); color: #000; }
+.chart-tip { position: absolute; z-index: 4; pointer-events: none; background: #0b0b0b; border: 1px solid var(--amber-dim); color: var(--text); padding: 5px 7px; font-size: 12px; line-height: 1.35; white-space: nowrap; max-width: calc(100% - 8px); }
+.chart-tip b { color: var(--amber-dim); font-weight: 500; }
 .seg button { background: #000; border: 1px solid var(--line); color: var(--muted); font: 500 11px var(--mono); padding: 0 6px; height: 16px; line-height: 14px; }
 .seg button.on { color: #000; background: var(--amber); border-color: var(--amber); }
 
 .chart-wrap { padding: 0; }
-.chart-host { position: absolute; inset: 0; }
+.chart-host { position: absolute; inset: 0; touch-action: none; }
 .chart-host canvas { width: 100%; height: 100%; display: block; }
 .ohlc { color: var(--text-2); font-size: 11px; overflow: hidden; text-overflow: ellipsis; }
 .ohlc b { color: var(--amber-dim); font-weight: 500; margin-left: 6px; }
@@ -219,8 +230,8 @@ table.t { width: 100%; border-collapse: collapse; }
     flex: none;
     height: auto;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-rows: 280px 240px 220px 220px 150px;
-    grid-template-areas: "chart chart" "books regime" "heat health" "pos pos" "log log";
+    grid-template-rows: 380px 220px 200px 180px;
+    grid-template-areas: "chart chart" "books regime" "heat health" "pos log";
   }
   body { height: auto; overflow: auto; }
   #view-desk.on { display: block; overflow: visible; }
@@ -230,6 +241,8 @@ table.t { width: 100%; border-collapse: collapse; }
   .clock:nth-child(n+4) { display: none; }
   .clock .t { font-size: 15px; }
   .brand-name, .venue, .st-wide { display: none; }
+  .cmdbar { position: sticky; top: 0; z-index: 30; }
+  .back-desk { flex: 1 1 100%; justify-content: center; min-height: 36px; }
   .cmd { min-width: 0; flex-basis: 100%; }
   .cmd-right { flex-wrap: wrap; }
   .grid-desk {
@@ -237,7 +250,7 @@ table.t { width: 100%; border-collapse: collapse; }
     grid-template-rows: none;
     grid-template-areas: "chart" "books" "regime" "heat" "pos" "health" "log";
   }
-  .a-chart { height: 250px; }
+  .a-chart { height: 340px; }
   .a-books, .a-regime, .a-heat, .a-pos, .a-health { height: 230px; }
   .a-log { height: 200px; }
   .grid-fac { grid-template-columns: minmax(0, 1fr); }
