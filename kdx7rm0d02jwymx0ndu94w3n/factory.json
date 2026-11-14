@@ -1,15 +1,15 @@
 {
  "schema": "desk.factory.v1",
  "mode": "PAPER",
- "generated": "2026-11-14T10:15:43+01:00",
- "generated_label": "14.11.2026 10:15 Rom",
- "pipeline_updated": "2026-11-14T09:07:26+01:00",
+ "generated": "2026-11-14T11:14:03+01:00",
+ "generated_label": "14.11.2026 11:14 Rom",
+ "pipeline_updated": "2026-11-14T11:09:01+01:00",
  "budget_day_utc": "2026-11-14",
- "budget_used": 0,
+ "budget_used": 2,
  "budget_total": 2,
- "budget_remaining": 2,
+ "budget_remaining": 0,
  "budget_rule": "2 Einheiten je UTC-Tag; vorab festgeschriebene Familie <=4 Varianten = 1 Einheit; DSR-N zaehlt jede Variante",
- "dsr_n": 282,
+ "dsr_n": 286,
  "gate_sharpe_gt": 1.0,
  "gate_dsr_gt": 0.95,
  "gate_pbo_lt": 0.3,
@@ -20,11 +20,11 @@
  "regime_longs_allowed": false,
  "regime_shorts_allowed": true,
  "regime_day": "2026-11-12",
- "regime_as_of": "14.11 10:04",
+ "regime_as_of": "14.11 11:03",
  "regime_note": "BTC nur Regime-Filter, nie gehandelt",
  "n_specs": 49,
  "n_queue": 0,
- "n_scored": 2,
+ "n_scored": 6,
  "n_pass": 0,
  "counts": [
   {
@@ -48,7 +48,7 @@
    "n": 4
   },
   {
-   "status": "READY_TO_PREREGISTER",
+   "status": "SCORED",
    "n": 2
   },
   {
@@ -345,18 +345,18 @@
   },
   {
    "id": "ATLAS-B14-POLSLOPE",
-   "variant": null,
    "name": "Monetary-policy slope (Neuhierl-Weber) as a weekly long/cash gate: long after ex",
    "family": "MONETARY_POLICY_PATH",
-   "status": "READY_TO_PREREGISTER",
-   "verdict": null,
-   "sharpe": null,
-   "dsr": null,
-   "pbo": null,
-   "max_dd": null,
-   "closes": null,
+   "status": "SCORED",
    "diagnostic": true,
-   "scored_at": null
+   "variant": 0,
+   "verdict": "FAIL",
+   "sharpe": -0.9207,
+   "dsr": 0.0015,
+   "pbo": null,
+   "max_dd": 0.8567,
+   "closes": 64,
+   "scored_at": "2026-11-14T11:09:01+01:00"
   },
   {
    "id": "ATLAS-B14-SLOTPER-R1",
@@ -690,18 +690,48 @@
   },
   {
    "id": "VEGA-E13LF-COT-LEVMONEY-LONGFLAT-v2",
-   "variant": null,
    "name": "CFTC TFF leveraged-money net-position change — long/flat held alt spot, short fi",
    "family": "VEGA-E13LF-COT-LEVMONEY-LONGFLAT",
-   "status": "READY_TO_PREREGISTER",
-   "verdict": null,
-   "sharpe": null,
-   "dsr": null,
-   "pbo": null,
-   "max_dd": null,
-   "closes": null,
+   "status": "SCORED",
    "diagnostic": true,
-   "scored_at": null
+   "variant": 0,
+   "verdict": "FAIL",
+   "sharpe": -0.1371,
+   "dsr": 0.0064,
+   "pbo": 0.3571,
+   "max_dd": 0.6307,
+   "closes": 56,
+   "scored_at": "2026-11-14T11:09:01+01:00"
+  },
+  {
+   "id": "VEGA-E13LF-COT-LEVMONEY-LONGFLAT-v2",
+   "name": "CFTC TFF leveraged-money net-position change — long/flat held alt spot, short fi",
+   "family": "VEGA-E13LF-COT-LEVMONEY-LONGFLAT",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 1,
+   "verdict": "FAIL",
+   "sharpe": -0.4486,
+   "dsr": 0.001,
+   "pbo": 0.3571,
+   "max_dd": 0.7071,
+   "closes": 56,
+   "scored_at": "2026-11-14T11:09:01+01:00"
+  },
+  {
+   "id": "VEGA-E13LF-COT-LEVMONEY-LONGFLAT-v2",
+   "name": "CFTC TFF leveraged-money net-position change — long/flat held alt spot, short fi",
+   "family": "VEGA-E13LF-COT-LEVMONEY-LONGFLAT",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 2,
+   "verdict": "FAIL",
+   "sharpe": 0.3628,
+   "dsr": 0.0569,
+   "pbo": 0.3571,
+   "max_dd": 0.5123,
+   "closes": 56,
+   "scored_at": "2026-11-14T11:09:01+01:00"
   },
   {
    "id": "VEGA-E14-FOMC-Y2SURP-v1",
@@ -802,5 +832,5 @@
    "text": "PAPER only: keine Orders, keine Keys"
   }
  ],
- "fingerprint": "3eb2d8fe9697a63e"
+ "fingerprint": "1aaaa133fadc51fb"
 }
