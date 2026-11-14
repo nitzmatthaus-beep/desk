@@ -1,9 +1,9 @@
 {
  "schema": "desk.factory.v1",
  "mode": "PAPER",
- "generated": "2026-11-14T08:14:03+01:00",
- "generated_label": "14.11.2026 08:14 Rom",
- "pipeline_updated": "2026-11-14T08:09:01+01:00",
+ "generated": "2026-11-14T09:14:03+01:00",
+ "generated_label": "14.11.2026 09:14 Rom",
+ "pipeline_updated": "2026-11-14T09:07:26+01:00",
  "budget_day_utc": "2026-11-14",
  "budget_used": 0,
  "budget_total": 2,
@@ -20,16 +20,16 @@
  "regime_longs_allowed": false,
  "regime_shorts_allowed": true,
  "regime_day": "2026-11-12",
- "regime_as_of": "14.11 08:06",
+ "regime_as_of": "14.11 09:06",
  "regime_note": "BTC nur Regime-Filter, nie gehandelt",
- "n_specs": 41,
+ "n_specs": 49,
  "n_queue": 0,
  "n_scored": 2,
  "n_pass": 0,
  "counts": [
   {
    "status": "BLOCKED_SANA",
-   "n": 1
+   "n": 7
   },
   {
    "status": "BLOCKED_UNDER_40",
@@ -46,6 +46,10 @@
   {
    "status": "ENGINE_BLOCKED_REOPENABLE",
    "n": 4
+  },
+  {
+   "status": "READY_TO_PREREGISTER",
+   "n": 2
   },
   {
    "status": "SCORED_MANUAL",
@@ -285,6 +289,81 @@
    "name": "Lagged geopolitical-risk AR(1) shock as a long/cash gate (Caldara-Iacoviello)",
    "family": null,
    "status": "CLOSED_DATA_BLOCKED",
+   "verdict": null,
+   "sharpe": null,
+   "dsr": null,
+   "pbo": null,
+   "max_dd": null,
+   "closes": null,
+   "diagnostic": true,
+   "scored_at": null
+  },
+  {
+   "id": "ATLAS-B14-CIVOL",
+   "variant": null,
+   "name": "Crypto volatility premium: weekly long the highest prior-week realized-variance ",
+   "family": "LOTTERY_VOL_LIQUIDITY",
+   "status": "BLOCKED_SANA",
+   "verdict": null,
+   "sharpe": null,
+   "dsr": null,
+   "pbo": null,
+   "max_dd": null,
+   "closes": null,
+   "diagnostic": true,
+   "scored_at": null
+  },
+  {
+   "id": "ATLAS-B14-ILLIQ-R1",
+   "variant": null,
+   "name": "Amihud illiquidity premium, long the most illiquid tercile (new registration of ",
+   "family": "LOTTERY_VOL_LIQUIDITY",
+   "status": "BLOCKED_SANA",
+   "verdict": null,
+   "sharpe": null,
+   "dsr": null,
+   "pbo": null,
+   "max_dd": null,
+   "closes": null,
+   "diagnostic": true,
+   "scored_at": null
+  },
+  {
+   "id": "ATLAS-B14-MAX-R1",
+   "variant": null,
+   "name": "Lottery MAX effect, long the lowest prior-month-MAX tercile (new registration of",
+   "family": "LOTTERY_VOL_LIQUIDITY",
+   "status": "BLOCKED_SANA",
+   "verdict": null,
+   "sharpe": null,
+   "dsr": null,
+   "pbo": null,
+   "max_dd": null,
+   "closes": null,
+   "diagnostic": true,
+   "scored_at": null
+  },
+  {
+   "id": "ATLAS-B14-POLSLOPE",
+   "variant": null,
+   "name": "Monetary-policy slope (Neuhierl-Weber) as a weekly long/cash gate: long after ex",
+   "family": "MONETARY_POLICY_PATH",
+   "status": "READY_TO_PREREGISTER",
+   "verdict": null,
+   "sharpe": null,
+   "dsr": null,
+   "pbo": null,
+   "max_dd": null,
+   "closes": null,
+   "diagnostic": true,
+   "scored_at": null
+  },
+  {
+   "id": "ATLAS-B14-SLOTPER-R1",
+   "variant": null,
+   "name": "Same-4h-slot return periodicity on held11 (new registration of ATLAS-B10-SLOTPER",
+   "family": "INTRADAY_TIME_OF_DAY",
+   "status": "BLOCKED_SANA",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -610,6 +689,21 @@
    "scored_at": null
   },
   {
+   "id": "VEGA-E13LF-COT-LEVMONEY-LONGFLAT-v2",
+   "variant": null,
+   "name": "CFTC TFF leveraged-money net-position change — long/flat held alt spot, short fi",
+   "family": "VEGA-E13LF-COT-LEVMONEY-LONGFLAT",
+   "status": "READY_TO_PREREGISTER",
+   "verdict": null,
+   "sharpe": null,
+   "dsr": null,
+   "pbo": null,
+   "max_dd": null,
+   "closes": null,
+   "diagnostic": true,
+   "scored_at": null
+  },
+  {
    "id": "VEGA-E14-FOMC-Y2SURP-v1",
    "variant": null,
    "name": "FOMC statement: signed 2-year Treasury yield change as causal surprise proxy (Ma",
@@ -668,6 +762,36 @@
    "closes": null,
    "diagnostic": true,
    "scored_at": null
+  },
+  {
+   "id": "VEGA-E18-CS-ST-REVERSAL-LONGONLY-v1",
+   "variant": null,
+   "name": "Cross-sectional short-horizon return reversal — long-only bottom-k on held11 spo",
+   "family": "VEGA-E18-CS-ST-REVERSAL-LONGONLY",
+   "status": "BLOCKED_SANA",
+   "verdict": null,
+   "sharpe": null,
+   "dsr": null,
+   "pbo": null,
+   "max_dd": null,
+   "closes": null,
+   "diagnostic": true,
+   "scored_at": null
+  },
+  {
+   "id": "VEGA-E19-VIX-BELOW-MEDIAN-VOLMANAGED-v1",
+   "variant": null,
+   "name": "Binary volatility-managed long/cash: long held11 when VIX is below its trailing ",
+   "family": "VEGA-E19-VIX-BELOW-MEDIAN-VOLMANAGED",
+   "status": "BLOCKED_SANA",
+   "verdict": null,
+   "sharpe": null,
+   "dsr": null,
+   "pbo": null,
+   "max_dd": null,
+   "closes": null,
+   "diagnostic": true,
+   "scored_at": null
   }
  ],
  "notes": [
@@ -678,5 +802,5 @@
    "text": "PAPER only: keine Orders, keine Keys"
   }
  ],
- "fingerprint": "507e268a7dad05ab"
+ "fingerprint": "77032d836a8102fc"
 }
