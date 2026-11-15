@@ -1,9 +1,9 @@
 {
  "schema": "desk.factory.v1",
  "mode": "PAPER",
- "generated": "2026-11-15T07:14:03+01:00",
- "generated_label": "15.11.2026 07:14 Rom",
- "pipeline_updated": "2026-11-15T07:09:01+01:00",
+ "generated": "2026-11-15T08:14:03+01:00",
+ "generated_label": "15.11.2026 08:14 Rom",
+ "pipeline_updated": "2026-11-15T08:09:01+01:00",
  "budget_day_utc": "2026-11-15",
  "budget_used": 0,
  "budget_total": 2,
@@ -20,9 +20,9 @@
  "regime_longs_allowed": false,
  "regime_shorts_allowed": true,
  "regime_day": "2026-11-13",
- "regime_as_of": "15.11 07:05",
+ "regime_as_of": "15.11 08:07",
  "regime_note": "BTC nur Regime-Filter, nie gehandelt",
- "n_specs": 49,
+ "n_specs": 50,
  "n_queue": 0,
  "n_scored": 6,
  "n_pass": 0,
@@ -54,6 +54,10 @@
   {
    "status": "SCORED_MANUAL",
    "n": 2
+  },
+  {
+   "status": "WAITING_SANA",
+   "n": 1
   }
  ],
  "queue": [],
@@ -822,6 +826,21 @@
    "closes": null,
    "diagnostic": true,
    "scored_at": null
+  },
+  {
+   "id": "VEGA-E20-SMA50-TREND-LONGFLAT-v1",
+   "variant": null,
+   "name": "Brock-Lakonishok-LeBaron 1-50 moving-average timing — long/flat on held11 spot",
+   "family": "VEGA-E20-SMA50-TREND-LONGFLAT",
+   "status": "WAITING_SANA",
+   "verdict": null,
+   "sharpe": null,
+   "dsr": null,
+   "pbo": null,
+   "max_dd": null,
+   "closes": null,
+   "diagnostic": true,
+   "scored_at": null
   }
  ],
  "notes": [
@@ -832,5 +851,5 @@
    "text": "PAPER only: keine Orders, keine Keys"
   }
  ],
- "fingerprint": "1464169285ee7051"
+ "fingerprint": "347fbb40b5a35b26"
 }
