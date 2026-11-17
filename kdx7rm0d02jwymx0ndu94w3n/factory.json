@@ -1,9 +1,9 @@
 {
  "schema": "desk.factory.v1",
  "mode": "PAPER",
- "generated": "2026-11-17T23:14:03+01:00",
- "generated_label": "17.11.2026 23:14 Rom",
- "pipeline_updated": "2026-11-17T23:10:19+01:00",
+ "generated": "2026-11-18T00:14:04+01:00",
+ "generated_label": "18.11.2026 00:14 Rom",
+ "pipeline_updated": "2026-11-18T00:09:01+01:00",
  "budget_day_utc": "2026-11-17",
  "budget_used": 0,
  "budget_total": 2,
@@ -20,7 +20,7 @@
  "regime_longs_allowed": false,
  "regime_shorts_allowed": true,
  "regime_day": "2026-11-16",
- "regime_as_of": "17.11 23:11",
+ "regime_as_of": "18.11 00:08",
  "regime_note": "BTC nur Regime-Filter, nie gehandelt",
  "n_specs": 50,
  "n_queue": 0,
@@ -847,5 +847,5 @@
    "text": "PAPER only: keine Orders, keine Keys"
   }
  ],
- "fingerprint": "f7ae56494f048a2a"
+ "fingerprint": "a5a2cfe97d9554cc"
 }
