@@ -1,9 +1,9 @@
 {
  "schema": "desk.factory.v1",
  "mode": "PAPER",
- "generated": "2026-11-17T13:14:04+01:00",
- "generated_label": "17.11.2026 13:14 Rom",
- "pipeline_updated": "2026-11-17T13:09:01+01:00",
+ "generated": "2026-11-17T14:14:03+01:00",
+ "generated_label": "17.11.2026 14:14 Rom",
+ "pipeline_updated": "2026-11-17T14:09:01+01:00",
  "budget_day_utc": "2026-11-17",
  "budget_used": 0,
  "budget_total": 2,
@@ -20,17 +20,13 @@
  "regime_longs_allowed": false,
  "regime_shorts_allowed": true,
  "regime_day": "2026-11-15",
- "regime_as_of": "17.11 13:05",
+ "regime_as_of": "17.11 14:07",
  "regime_note": "BTC nur Regime-Filter, nie gehandelt",
  "n_specs": 50,
  "n_queue": 0,
  "n_scored": 6,
  "n_pass": 0,
  "counts": [
-  {
-   "status": "BLOCKED_SANA",
-   "n": 1
-  },
   {
    "status": "CLOSED_DATA_BLOCKED",
    "n": 27
@@ -44,8 +40,12 @@
    "n": 4
   },
   {
+   "status": "REJECTED_CROSS_SECTIONAL",
+   "n": 5
+  },
+  {
    "status": "REJECTED_VARIANT_COUNT",
-   "n": 8
+   "n": 4
   },
   {
    "status": "SCORED",
@@ -303,7 +303,7 @@
    "variant": null,
    "name": "Crypto volatility premium: weekly long the highest prior-week realized-variance ",
    "family": "LOTTERY_VOL_LIQUIDITY",
-   "status": "REJECTED_VARIANT_COUNT",
+   "status": "REJECTED_CROSS_SECTIONAL",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -318,7 +318,7 @@
    "variant": null,
    "name": "Amihud illiquidity premium, long the most illiquid tercile (new registration of ",
    "family": "LOTTERY_VOL_LIQUIDITY",
-   "status": "REJECTED_VARIANT_COUNT",
+   "status": "REJECTED_CROSS_SECTIONAL",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -333,7 +333,7 @@
    "variant": null,
    "name": "Lottery MAX effect, long the lowest prior-month-MAX tercile (new registration of",
    "family": "LOTTERY_VOL_LIQUIDITY",
-   "status": "REJECTED_VARIANT_COUNT",
+   "status": "REJECTED_CROSS_SECTIONAL",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -363,7 +363,7 @@
    "variant": null,
    "name": "Same-4h-slot return periodicity on held11 (new registration of ATLAS-B10-SLOTPER",
    "family": "INTRADAY_TIME_OF_DAY",
-   "status": "REJECTED_VARIANT_COUNT",
+   "status": "REJECTED_CROSS_SECTIONAL",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -798,7 +798,7 @@
    "variant": null,
    "name": "Cross-sectional short-horizon return reversal — long-only bottom-k on held11 spo",
    "family": "VEGA-E18-CS-ST-REVERSAL-LONGONLY",
-   "status": "BLOCKED_SANA",
+   "status": "REJECTED_CROSS_SECTIONAL",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -847,5 +847,5 @@
    "text": "PAPER only: keine Orders, keine Keys"
   }
  ],
- "fingerprint": "323239c4ef60add6"
+ "fingerprint": "a73a8e05f0e6eedd"
 }
