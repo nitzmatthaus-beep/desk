@@ -1,9 +1,9 @@
 {
  "schema": "desk.factory.v1",
  "mode": "PAPER",
- "generated": "2026-11-17T11:14:14+01:00",
- "generated_label": "17.11.2026 11:14 Rom",
- "pipeline_updated": "2026-11-17T11:09:01+01:00",
+ "generated": "2026-11-17T12:14:03+01:00",
+ "generated_label": "17.11.2026 12:14 Rom",
+ "pipeline_updated": "2026-11-17T12:09:01+01:00",
  "budget_day_utc": "2026-11-17",
  "budget_used": 0,
  "budget_total": 2,
@@ -20,7 +20,7 @@
  "regime_longs_allowed": false,
  "regime_shorts_allowed": true,
  "regime_day": "2026-11-15",
- "regime_as_of": "17.11 11:03",
+ "regime_as_of": "17.11 12:03",
  "regime_note": "BTC nur Regime-Filter, nie gehandelt",
  "n_specs": 50,
  "n_queue": 0,
@@ -29,10 +29,6 @@
  "counts": [
   {
    "status": "BLOCKED_SANA",
-   "n": 8
-  },
-  {
-   "status": "BLOCKED_UNDER_40",
    "n": 1
   },
   {
@@ -46,6 +42,10 @@
   {
    "status": "ENGINE_BLOCKED_REOPENABLE",
    "n": 4
+  },
+  {
+   "status": "REJECTED_VARIANT_COUNT",
+   "n": 8
   },
   {
    "status": "SCORED",
@@ -228,7 +228,7 @@
    "variant": null,
    "name": null,
    "family": null,
-   "status": "BLOCKED_SANA",
+   "status": "REJECTED_VARIANT_COUNT",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -303,7 +303,7 @@
    "variant": null,
    "name": "Crypto volatility premium: weekly long the highest prior-week realized-variance ",
    "family": "LOTTERY_VOL_LIQUIDITY",
-   "status": "BLOCKED_SANA",
+   "status": "REJECTED_VARIANT_COUNT",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -318,7 +318,7 @@
    "variant": null,
    "name": "Amihud illiquidity premium, long the most illiquid tercile (new registration of ",
    "family": "LOTTERY_VOL_LIQUIDITY",
-   "status": "BLOCKED_SANA",
+   "status": "REJECTED_VARIANT_COUNT",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -333,7 +333,7 @@
    "variant": null,
    "name": "Lottery MAX effect, long the lowest prior-month-MAX tercile (new registration of",
    "family": "LOTTERY_VOL_LIQUIDITY",
-   "status": "BLOCKED_SANA",
+   "status": "REJECTED_VARIANT_COUNT",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -363,7 +363,7 @@
    "variant": null,
    "name": "Same-4h-slot return periodicity on held11 (new registration of ATLAS-B10-SLOTPER",
    "family": "INTRADAY_TIME_OF_DAY",
-   "status": "BLOCKED_SANA",
+   "status": "REJECTED_VARIANT_COUNT",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -678,7 +678,7 @@
    "variant": null,
    "name": "CFTC TFF leveraged-money net-position change — long/flat transfer to held alt sp",
    "family": "VEGA-E13LF-COT-LEVMONEY-LONGFLAT",
-   "status": "BLOCKED_UNDER_40",
+   "status": "REJECTED_VARIANT_COUNT",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -813,7 +813,7 @@
    "variant": null,
    "name": "Binary volatility-managed long/cash: long held11 when VIX is below its trailing ",
    "family": "VEGA-E19-VIX-BELOW-MEDIAN-VOLMANAGED",
-   "status": "BLOCKED_SANA",
+   "status": "REJECTED_VARIANT_COUNT",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -828,7 +828,7 @@
    "variant": null,
    "name": "Brock-Lakonishok-LeBaron 1-50 moving-average timing — long/flat on held11 spot",
    "family": "VEGA-E20-SMA50-TREND-LONGFLAT",
-   "status": "BLOCKED_SANA",
+   "status": "REJECTED_VARIANT_COUNT",
    "verdict": null,
    "sharpe": null,
    "dsr": null,
@@ -847,5 +847,5 @@
    "text": "PAPER only: keine Orders, keine Keys"
   }
  ],
- "fingerprint": "4882da76f3351854"
+ "fingerprint": "d4a1e354afa4061f"
 }
