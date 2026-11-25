@@ -1,0 +1,608 @@
+{
+ "schema": "desk.replay.v1",
+ "mode": "HISTORICAL_REPLAY_SIMULATION",
+ "disclaimer": "Historische Replay-Simulation. Öffentliche Bitget-BTC-Kerzen und Deribit-IV. Kein Paper-Buch, nicht in irgendeiner Summe, keine Orders.",
+ "counted_in_desk_totals": false,
+ "generated": "2026-11-25T09:42:00+01:00",
+ "generated_label": "25.11.2026 09:42 Europe/Rome",
+ "window_start": "2026-11-25T07:41:00Z",
+ "window_end": "2026-11-25T08:41:00Z",
+ "gaps": 0,
+ "mark": 59250.0,
+ "books": [
+  {
+   "id": "A",
+   "name": "Buch A · immer an",
+   "pnl": -30.128280999999333,
+   "fees": 3.531281,
+   "fills": 3,
+   "pos": -0.1
+  },
+  {
+   "id": "B",
+   "name": "Buch B · HOLD/FLAT an der Rundengrenze",
+   "pnl": 2.6797864000009213,
+   "fees": 7.0602136,
+   "fills": 6,
+   "pos": 0.0
+  }
+ ],
+ "rounds": [
+  {
+   "round": 1,
+   "start": "2026-11-25T07:41:00Z",
+   "end": "2026-11-25T07:46:00Z",
+   "call": "HOLD",
+   "reason": "Autocorrelation is +0.08 (not trending) and first round, no previous P&L; conditions suit mean reversion, keep the rule running.",
+   "autocorr15": 0.0753,
+   "prev_round_rule_pnl": null,
+   "pnl_A": 4.5432,
+   "pnl_B": 4.5432,
+   "fees_A": 1.1758,
+   "fees_B": 1.1758,
+   "pos_A_end": 0.1,
+   "pos_B_end": 0.1,
+   "mark": 58847.2,
+   "cum_A": 4.5432,
+   "cum_B": 4.5432,
+   "n_fills": 2
+  },
+  {
+   "round": 2,
+   "start": "2026-11-25T07:46:00Z",
+   "end": "2026-11-25T07:51:00Z",
+   "call": "HOLD",
+   "reason": "Autocorrelation is +0.05 (not trending) and rule made +4.54 USDT last round; conditions suit mean reversion, keep the rule running.",
+   "autocorr15": 0.0528,
+   "prev_round_rule_pnl": 4.5432,
+   "pnl_A": -6.72,
+   "pnl_B": -6.72,
+   "fees_A": 0.0,
+   "fees_B": 0.0,
+   "pos_A_end": 0.1,
+   "pos_B_end": 0.1,
+   "mark": 58780.0,
+   "cum_A": -2.1768,
+   "cum_B": -2.1768,
+   "n_fills": 0
+  },
+  {
+   "round": 3,
+   "start": "2026-11-25T07:51:00Z",
+   "end": "2026-11-25T07:56:00Z",
+   "call": "FLAT",
+   "reason": "The rule lost -6.72 USDT last round and autocorrelation is still positive (+0.06), so there is no sign the market has turned mean-reverting. Sitting out.",
+   "autocorr15": 0.0646,
+   "prev_round_rule_pnl": -6.72,
+   "pnl_A": -9.2,
+   "pnl_B": -1.1756,
+   "fees_A": 0.0,
+   "fees_B": 1.1756,
+   "pos_A_end": 0.1,
+   "pos_B_end": 0.0,
+   "mark": 58688.0,
+   "cum_A": -11.3768,
+   "cum_B": -3.3524,
+   "n_fills": 1
+  },
+  {
+   "round": 4,
+   "start": "2026-11-25T07:56:00Z",
+   "end": "2026-11-25T08:01:00Z",
+   "call": "HOLD",
+   "reason": "Autocorrelation is -0.03 (not trending) and rule made -9.20 USDT last round; conditions suit mean reversion, keep the rule running.",
+   "autocorr15": -0.0334,
+   "prev_round_rule_pnl": -9.2,
+   "pnl_A": 14.604,
+   "pnl_B": 13.4302,
+   "fees_A": 0.0,
+   "fees_B": 1.1738,
+   "pos_A_end": 0.1,
+   "pos_B_end": 0.1,
+   "mark": 58834.04,
+   "cum_A": 3.2272,
+   "cum_B": 10.0778,
+   "n_fills": 1
+  },
+  {
+   "round": 5,
+   "start": "2026-11-25T08:01:00Z",
+   "end": "2026-11-25T08:06:00Z",
+   "call": "HOLD",
+   "reason": "Autocorrelation is -0.16 (not trending) and rule made +14.60 USDT last round; conditions suit mean reversion, keep the rule running.",
+   "autocorr15": -0.1623,
+   "prev_round_rule_pnl": 14.604,
+   "pnl_A": -1.1767,
+   "pnl_B": -1.1767,
+   "fees_A": 1.1767,
+   "fees_B": 1.1767,
+   "pos_A_end": 0.0,
+   "pos_B_end": 0.0,
+   "mark": 58840.97,
+   "cum_A": 2.0505,
+   "cum_B": 8.9012,
+   "n_fills": 2
+  },
+  {
+   "round": 6,
+   "start": "2026-11-25T08:06:00Z",
+   "end": "2026-11-25T08:11:00Z",
+   "call": "HOLD",
+   "reason": "Autocorrelation is -0.27 (not trending) and rule made -1.18 USDT last round; conditions suit mean reversion, keep the rule running.",
+   "autocorr15": -0.2656,
+   "prev_round_rule_pnl": -1.1767,
+   "pnl_A": 3.8212,
+   "pnl_B": 3.8212,
+   "fees_A": 1.1788,
+   "fees_B": 1.1788,
+   "pos_A_end": -0.1,
+   "pos_B_end": -0.1,
+   "mark": 58890.0,
+   "cum_A": 5.8717,
+   "cum_B": 12.7224,
+   "n_fills": 2
+  },
+  {
+   "round": 7,
+   "start": "2026-11-25T08:11:00Z",
+   "end": "2026-11-25T08:16:00Z",
+   "call": "HOLD",
+   "reason": "Autocorrelation is -0.56 (not trending) and rule made +3.82 USDT last round; conditions suit mean reversion, keep the rule running.",
+   "autocorr15": -0.5639,
+   "prev_round_rule_pnl": 3.8212,
+   "pnl_A": -1.0,
+   "pnl_B": -1.0,
+   "fees_A": 0.0,
+   "fees_B": 0.0,
+   "pos_A_end": -0.1,
+   "pos_B_end": -0.1,
+   "mark": 58900.0,
+   "cum_A": 4.8717,
+   "cum_B": 11.7224,
+   "n_fills": 0
+  },
+  {
+   "round": 8,
+   "start": "2026-11-25T08:16:00Z",
+   "end": "2026-11-25T08:21:00Z",
+   "call": "HOLD",
+   "reason": "Autocorrelation is -0.56 (not trending) and rule made -1.00 USDT last round; conditions suit mean reversion, keep the rule running.",
+   "autocorr15": -0.5553,
+   "prev_round_rule_pnl": -1.0,
+   "pnl_A": -6.52,
+   "pnl_B": -6.52,
+   "fees_A": 0.0,
+   "fees_B": 0.0,
+   "pos_A_end": -0.1,
+   "pos_B_end": -0.1,
+   "mark": 58965.2,
+   "cum_A": -1.6483,
+   "cum_B": 5.2024,
+   "n_fills": 0
+  },
+  {
+   "round": 9,
+   "start": "2026-11-25T08:21:00Z",
+   "end": "2026-11-25T08:26:00Z",
+   "call": "HOLD",
+   "reason": "Autocorrelation is -0.28 (not trending) and rule made -6.52 USDT last round; conditions suit mean reversion, keep the rule running.",
+   "autocorr15": -0.2769,
+   "prev_round_rule_pnl": -6.52,
+   "pnl_A": -1.343,
+   "pnl_B": -1.343,
+   "fees_A": 0.0,
+   "fees_B": 0.0,
+   "pos_A_end": -0.1,
+   "pos_B_end": -0.1,
+   "mark": 58978.63,
+   "cum_A": -2.9913,
+   "cum_B": 3.8594,
+   "n_fills": 0
+  },
+  {
+   "round": 10,
+   "start": "2026-11-25T08:26:00Z",
+   "end": "2026-11-25T08:31:00Z",
+   "call": "FLAT",
+   "reason": "The rule lost -1.34 USDT last round and autocorrelation is still positive (+0.10), so there is no sign the market has turned mean-reverting. Sitting out.",
+   "autocorr15": 0.1046,
+   "prev_round_rule_pnl": -1.343,
+   "pnl_A": -22.975,
+   "pnl_B": -1.1796,
+   "fees_A": 0.0,
+   "fees_B": 1.1796,
+   "pos_A_end": -0.1,
+   "pos_B_end": 0.0,
+   "mark": 59208.38,
+   "cum_A": -25.9663,
+   "cum_B": 2.6798,
+   "n_fills": 1
+  },
+  {
+   "round": 11,
+   "start": "2026-11-25T08:31:00Z",
+   "end": "2026-11-25T08:36:00Z",
+   "call": "FLAT",
+   "reason": "Last 15 one-minute returns are positively autocorrelated (+0.29 > +0.15): price is trending, so fading 1-ATR moves is likely to lose. Sitting out.",
+   "autocorr15": 0.2934,
+   "prev_round_rule_pnl": -22.975,
+   "pnl_A": -17.161,
+   "pnl_B": 0.0,
+   "fees_A": 0.0,
+   "fees_B": 0.0,
+   "pos_A_end": -0.1,
+   "pos_B_end": 0.0,
+   "mark": 59379.99,
+   "cum_A": -43.1273,
+   "cum_B": 2.6798,
+   "n_fills": 0
+  },
+  {
+   "round": 12,
+   "start": "2026-11-25T08:36:00Z",
+   "end": "2026-11-25T08:41:00Z",
+   "call": "FLAT",
+   "reason": "Last 15 one-minute returns are positively autocorrelated (+0.20 > +0.15): price is trending, so fading 1-ATR moves is likely to lose. Sitting out.",
+   "autocorr15": 0.2025,
+   "prev_round_rule_pnl": -17.161,
+   "pnl_A": 12.999,
+   "pnl_B": 0.0,
+   "fees_A": 0.0,
+   "fees_B": 0.0,
+   "pos_A_end": -0.1,
+   "pos_B_end": 0.0,
+   "mark": 59250.0,
+   "cum_A": -30.1283,
+   "cum_B": 2.6798,
+   "n_fills": 0
+  }
+ ],
+ "fills": [
+  {
+   "book": "A_always_on",
+   "round": 1,
+   "ts": "2026-11-25T07:41:00Z",
+   "side": "BUY",
+   "qty": 0.1,
+   "price": 58790.01,
+   "fee": 1.1758002,
+   "pos_after": 0.1,
+   "reason": "close 58790.01 is more than 1 ATR (86.19) below EMA20 58964.79: buy toward fair value"
+  },
+  {
+   "book": "B_hold_flat",
+   "round": 1,
+   "ts": "2026-11-25T07:41:00Z",
+   "side": "BUY",
+   "qty": 0.1,
+   "price": 58790.01,
+   "fee": 1.1758002,
+   "pos_after": 0.1,
+   "reason": "close 58790.01 is more than 1 ATR (86.19) below EMA20 58964.79: buy toward fair value"
+  },
+  {
+   "book": "B_hold_flat",
+   "round": 3,
+   "ts": "2026-11-25T07:51:00Z",
+   "side": "SELL",
+   "qty": 0.1,
+   "price": 58780.0,
+   "fee": 1.1756,
+   "pos_after": 0.0,
+   "reason": "FLAT call at round boundary: close position and sit out"
+  },
+  {
+   "book": "B_hold_flat",
+   "round": 4,
+   "ts": "2026-11-25T07:56:00Z",
+   "side": "BUY",
+   "qty": 0.1,
+   "price": 58688.0,
+   "fee": 1.1737600000000001,
+   "pos_after": 0.1,
+   "reason": "close 58688.00 is more than 1 ATR (82.96) below EMA20 58812.25: buy toward fair value"
+  },
+  {
+   "book": "A_always_on",
+   "round": 5,
+   "ts": "2026-11-25T08:01:00Z",
+   "side": "SELL",
+   "qty": 0.1,
+   "price": 58834.04,
+   "fee": 1.1766808000000002,
+   "pos_after": 0.0,
+   "reason": "price reverted to fair value (close 58834.04 vs EMA20 58789.62): take profit/exit"
+  },
+  {
+   "book": "B_hold_flat",
+   "round": 5,
+   "ts": "2026-11-25T08:01:00Z",
+   "side": "SELL",
+   "qty": 0.1,
+   "price": 58834.04,
+   "fee": 1.1766808000000002,
+   "pos_after": 0.0,
+   "reason": "price reverted to fair value (close 58834.04 vs EMA20 58789.62): take profit/exit"
+  },
+  {
+   "book": "A_always_on",
+   "round": 6,
+   "ts": "2026-11-25T08:10:00Z",
+   "side": "SELL",
+   "qty": 0.1,
+   "price": 58940.0,
+   "fee": 1.1788,
+   "pos_after": -0.1,
+   "reason": "close 58940.00 is more than 1 ATR (71.90) above EMA20 58834.18: sell toward fair value"
+  },
+  {
+   "book": "B_hold_flat",
+   "round": 6,
+   "ts": "2026-11-25T08:10:00Z",
+   "side": "SELL",
+   "qty": 0.1,
+   "price": 58940.0,
+   "fee": 1.1788,
+   "pos_after": -0.1,
+   "reason": "close 58940.00 is more than 1 ATR (71.90) above EMA20 58834.18: sell toward fair value"
+  },
+  {
+   "book": "B_hold_flat",
+   "round": 10,
+   "ts": "2026-11-25T08:26:00Z",
+   "side": "BUY",
+   "qty": 0.1,
+   "price": 58978.63,
+   "fee": 1.1795726,
+   "pos_after": 0.0,
+   "reason": "FLAT call at round boundary: close position and sit out"
+  }
+ ],
+ "vol": {
+  "snapshot": "2026-11-25 09:41:56 Europe/Rome",
+  "points": 394,
+  "expiries": 10,
+  "atm_1m": 49.3356857853342,
+  "rr25_1m": -9.831429769063806,
+  "calendar_violations": 2,
+  "calendar_violations_in_quoted_range": 0,
+  "fits": [
+   {
+    "expiry": "2026-11-27",
+    "n": 30,
+    "rmse": 1.06680749933679,
+    "max_err": 2.592020095342762,
+    "butterfly_ok": true,
+    "butterfly_ok_in_quoted_range": true,
+    "lee_ok": true,
+    "minvar_ok": true
+   },
+   {
+    "expiry": "2026-11-28",
+    "n": 21,
+    "rmse": 0.1444399517917782,
+    "max_err": 0.3126439983794804,
+    "butterfly_ok": true,
+    "butterfly_ok_in_quoted_range": true,
+    "lee_ok": true,
+    "minvar_ok": true
+   },
+   {
+    "expiry": "2026-11-29",
+    "n": 20,
+    "rmse": 0.364871378966222,
+    "max_err": 1.000703826805116,
+    "butterfly_ok": true,
+    "butterfly_ok_in_quoted_range": true,
+    "lee_ok": true,
+    "minvar_ok": true
+   },
+   {
+    "expiry": "2026-12-04",
+    "n": 31,
+    "rmse": 0.37180865327700846,
+    "max_err": 0.7597362224912696,
+    "butterfly_ok": true,
+    "butterfly_ok_in_quoted_range": true,
+    "lee_ok": true,
+    "minvar_ok": true
+   },
+   {
+    "expiry": "2026-12-11",
+    "n": 21,
+    "rmse": 0.10218902168916472,
+    "max_err": 0.26955398517937157,
+    "butterfly_ok": false,
+    "butterfly_ok_in_quoted_range": true,
+    "lee_ok": true,
+    "minvar_ok": true
+   },
+   {
+    "expiry": "2026-12-25",
+    "n": 45,
+    "rmse": 0.5393710696606104,
+    "max_err": 1.1266558016414518,
+    "butterfly_ok": true,
+    "butterfly_ok_in_quoted_range": true,
+    "lee_ok": true,
+    "minvar_ok": true
+   },
+   {
+    "expiry": "2027-01-29",
+    "n": 62,
+    "rmse": 0.1891529242278093,
+    "max_err": 0.6030306592470502,
+    "butterfly_ok": true,
+    "butterfly_ok_in_quoted_range": true,
+    "lee_ok": true,
+    "minvar_ok": true
+   },
+   {
+    "expiry": "2027-03-26",
+    "n": 52,
+    "rmse": 0.1683265633318882,
+    "max_err": 0.5565149307314887,
+    "butterfly_ok": true,
+    "butterfly_ok_in_quoted_range": true,
+    "lee_ok": true,
+    "minvar_ok": true
+   },
+   {
+    "expiry": "2027-06-25",
+    "n": 54,
+    "rmse": 0.05927884645151695,
+    "max_err": 0.1662498709131932,
+    "butterfly_ok": true,
+    "butterfly_ok_in_quoted_range": true,
+    "lee_ok": true,
+    "minvar_ok": true
+   },
+   {
+    "expiry": "2027-09-24",
+    "n": 58,
+    "rmse": 0.06961739701360235,
+    "max_err": 0.1485083537449805,
+    "butterfly_ok": true,
+    "butterfly_ok_in_quoted_range": true,
+    "lee_ok": true,
+    "minvar_ok": true
+   }
+  ]
+ },
+ "nanochat": {
+  "device": "cpu",
+  "params": 110646,
+  "train_rounds": 700,
+  "val_rounds": 175,
+  "nano_acc": 0.5337142857142857,
+  "majority_baseline": 0.5428571428571429,
+  "rule_acc": 0.4514285714285714,
+  "agree_with_rule": 8,
+  "note": "Kleines CPU-Modell (nanochat-Code, keine GPU). Trefferquote 53.4 % gegenüber Mehrheit 54.3 % — kein echter Vorteil.",
+  "replay": [
+   {
+    "round": 1,
+    "p_hold": 0.056,
+    "nano_call": "FLAT",
+    "rule_call": "HOLD",
+    "hindsight": "HOLD"
+   },
+   {
+    "round": 2,
+    "p_hold": 0.868,
+    "nano_call": "HOLD",
+    "rule_call": "HOLD",
+    "hindsight": "FLAT"
+   },
+   {
+    "round": 3,
+    "p_hold": 0.207,
+    "nano_call": "FLAT",
+    "rule_call": "FLAT",
+    "hindsight": "FLAT"
+   },
+   {
+    "round": 4,
+    "p_hold": 0.503,
+    "nano_call": "HOLD",
+    "rule_call": "HOLD",
+    "hindsight": "HOLD"
+   },
+   {
+    "round": 5,
+    "p_hold": 0.388,
+    "nano_call": "FLAT",
+    "rule_call": "HOLD",
+    "hindsight": "FLAT"
+   },
+   {
+    "round": 6,
+    "p_hold": 0.845,
+    "nano_call": "HOLD",
+    "rule_call": "HOLD",
+    "hindsight": "HOLD"
+   },
+   {
+    "round": 7,
+    "p_hold": 0.319,
+    "nano_call": "FLAT",
+    "rule_call": "HOLD",
+    "hindsight": "FLAT"
+   },
+   {
+    "round": 8,
+    "p_hold": 0.845,
+    "nano_call": "HOLD",
+    "rule_call": "HOLD",
+    "hindsight": "FLAT"
+   },
+   {
+    "round": 9,
+    "p_hold": 0.809,
+    "nano_call": "HOLD",
+    "rule_call": "HOLD",
+    "hindsight": "FLAT"
+   },
+   {
+    "round": 10,
+    "p_hold": 0.292,
+    "nano_call": "FLAT",
+    "rule_call": "FLAT",
+    "hindsight": "FLAT"
+   },
+   {
+    "round": 11,
+    "p_hold": 0.404,
+    "nano_call": "FLAT",
+    "rule_call": "FLAT",
+    "hindsight": "FLAT"
+   },
+   {
+    "round": 12,
+    "p_hold": 0.52,
+    "nano_call": "HOLD",
+    "rule_call": "FLAT",
+    "hindsight": "HOLD"
+   }
+  ]
+ },
+ "profile": {
+  "magic_trace": "magic-trace: magic-trace needs Intel Processor Trace (or, in its sampling fallback, hardware perf events it can parse). This box is a VM: no intel_pt PMU and no hardware cycle counter is exposed, so perf falls back to the software task-clock event, which magic-trace v1.2.4 rejects while decoding ('Unexpected event type ... task-clock'). Fallback used: cProfile (deterministic) + py-spy (sampling). Log: logs/",
+  "cprofile_note": "cProfile über den Stress-Replay (volle Historie): meiste Zeit in run_rounds, autocorr_lag1 und ATR.",
+  "pyspy_note": "py-spy: rund 39 % der Samples in run_rounds, 19 % in Zeitstempeln, 18 % in autocorr_lag1.",
+  "text": "Intel PT device present: False; hardware CPU PMU (cycles) present: False; ran as root: True; exit code 1. First error: (monitor.ml.Error\nmagic-trace needs Intel Processor Trace (or, in its sampling fallback, hardware perf events it can parse). This box is a VM: no intel_pt PMU and no hardware cycle counter is exposed, so perf falls back to the software task-clock event, which magic-trace v1.2.4 rejects while decoding ('Unexpected event type ... task-clock'). Fallback used: cProfile (deterministic) + py-spy (sampling). Log: logs/\n```\n3395261 function calls in 1.483 seconds\n   Ordered by: internal time\n   List reduced from 63 to 12 due to restriction <12>\n   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n       30    0.337    0.011    1.458    0.049 desk/replay.py:14(run_rounds)\n    26640    0.145    0.000    0.403    0.000 desk/rule.py:40(autocorr_lag1)\n    79920    0.124    0.000    0.211    0.000 {built-in method builtins.sum}\n   275790    0.117    0.000    0.117    0.000 {built-in method builtins.round}\n    84630    0.111    0.000    0.111    0.000 {method 'isoformat' of 'datetime.datetime' objects}\n       30    0.082    0.003    0.132    0.004 desk/rule.py:30(atr)\n    31350    0.080    0.000    0.143    0.000 desk/rule.py:77(trade_to)\n    84630    0.065    0.000    0.221    0.000 desk/replay.py:10(iso)\n   399600    0.045    0.000    0.045    0.000 desk/rule.py:50(<genexpr>)\n   426240    0.041    0.000    0.041    0.000 desk/rule.py:47(<genexpr>)\n   399600    0.040    0.000    0.040    0.000 {built-in method math.log}\n   359342    0.040    0.000    0.040    0.000 {method 'append' of 'list' objects}"
+ },
+ "images": [
+  {
+   "name": "desk-dashboard.png",
+   "caption": "Replay-Chart: BTC, EMA20, ATR-Band, Fills der beiden Bücher"
+  },
+  {
+   "name": "iv-surface-svi.png",
+   "caption": "Deribit implizite Volatilität mit SVI-Fit je Verfall"
+  }
+ ],
+ "notes": [
+  {
+   "title": "Simulation",
+   "text": "Historische Replay-Simulation. Öffentliche Bitget-BTC-Kerzen und Deribit-IV. Kein Paper-Buch, nicht in irgendeiner Summe, keine Orders."
+  },
+  {
+   "title": "magic-trace",
+   "text": "magic-trace: magic-trace needs Intel Processor Trace (or, in its sampling fallback, hardware perf events it can parse). This box is a VM: no intel_pt PMU and no hardware cycle counter is exposed, so perf falls back to the software task-clock event, which magic-trace v1.2.4 rejects while decoding ('Unexpected event type ... task-clock'). Fallback used: cProfile (deterministic) + py-spy (sampling). Log: logs/"
+  },
+  {
+   "title": "cProfile",
+   "text": "cProfile über den Stress-Replay (volle Historie): meiste Zeit in run_rounds, autocorr_lag1 und ATR."
+  },
+  {
+   "title": "py-spy",
+   "text": "py-spy: rund 39 % der Samples in run_rounds, 19 % in Zeitstempeln, 18 % in autocorr_lag1."
+  },
+  {
+   "title": "nanochat",
+   "text": "Kleines CPU-Modell (nanochat-Code, keine GPU). Trefferquote 53.4 % gegenüber Mehrheit 54.3 % — kein echter Vorteil."
+  }
+ ],
+ "fingerprint": "fea3f2bbb5ae4093"
+}
