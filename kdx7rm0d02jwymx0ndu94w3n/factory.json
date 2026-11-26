@@ -1,15 +1,15 @@
 {
  "schema": "desk.factory.v1",
  "mode": "PAPER",
- "generated": "2026-11-26T00:14:03+01:00",
- "generated_label": "26.11.2026 00:14 Rom",
- "pipeline_updated": "2026-11-26T00:09:01+01:00",
- "budget_day_utc": "2026-11-25",
+ "generated": "2026-11-26T01:14:04+01:00",
+ "generated_label": "26.11.2026 01:14 Rom",
+ "pipeline_updated": "2026-11-26T01:09:01+01:00",
+ "budget_day_utc": "2026-11-26",
  "budget_used": 2,
  "budget_total": 2,
  "budget_remaining": 0,
  "budget_rule": "2 Einheiten je UTC-Tag; vorab festgeschriebene Familie <=4 Varianten = 1 Einheit; DSR-N zaehlt jede Variante",
- "dsr_n": 298,
+ "dsr_n": 304,
  "gate_sharpe_gt": 1.0,
  "gate_dsr_gt": 0.95,
  "gate_pbo_lt": 0.3,
@@ -20,11 +20,11 @@
  "regime_longs_allowed": false,
  "regime_shorts_allowed": true,
  "regime_day": "2026-11-24",
- "regime_as_of": "26.11 00:07",
+ "regime_as_of": "26.11 01:07",
  "regime_note": "BTC nur Regime-Filter, nie gehandelt",
  "n_specs": 73,
- "n_queue": 19,
- "n_scored": 18,
+ "n_queue": 17,
+ "n_scored": 24,
  "n_pass": 0,
  "counts": [
   {
@@ -41,7 +41,7 @@
   },
   {
    "status": "QUEUED",
-   "n": 19
+   "n": 17
   },
   {
    "status": "REJECTED_CROSS_SECTIONAL",
@@ -53,7 +53,7 @@
   },
   {
    "status": "SCORED",
-   "n": 6
+   "n": 8
   },
   {
    "status": "SCORED_MANUAL",
@@ -62,28 +62,12 @@
  ],
  "queue": [
   {
-   "id": "AUTOGEN-V1-G05",
-   "name": "Fear vs last 14 days (z) rebound",
-   "family": "AUTOGEN-V1-G05",
-   "units_needed": 1,
-   "queued_at": "2026-11-24T13:09:01+01:00",
-   "waiting": "budget"
-  },
-  {
-   "id": "AUTOGEN-V1-G06",
-   "name": "1-day sentiment jump momentum",
-   "family": "AUTOGEN-V1-G06",
-   "units_needed": 1,
-   "queued_at": "2026-11-24T13:09:01+01:00",
-   "waiting": null
-  },
-  {
    "id": "AUTOGEN-V1-G07",
    "name": "3-day sentiment turn-up momentum",
    "family": "AUTOGEN-V1-G07",
    "units_needed": 1,
    "queued_at": "2026-11-24T13:09:01+01:00",
-   "waiting": null
+   "waiting": "budget"
   },
   {
    "id": "AUTOGEN-V1-G08",
@@ -817,33 +801,93 @@
   },
   {
    "id": "AUTOGEN-V1-G05",
-   "variant": null,
    "name": "Fear vs last 14 days (z) rebound",
    "family": "AUTOGEN-V1-G05",
-   "status": "QUEUED",
-   "verdict": null,
-   "sharpe": null,
-   "dsr": null,
-   "pbo": null,
-   "max_dd": null,
-   "closes": null,
+   "status": "SCORED",
    "diagnostic": true,
-   "scored_at": null
+   "variant": 0,
+   "verdict": "FAIL",
+   "sharpe": 0.5369,
+   "dsr": 0.0342,
+   "pbo": 0.7143,
+   "max_dd": 0.5414,
+   "closes": 74,
+   "scored_at": "2026-11-26T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G05",
+   "name": "Fear vs last 14 days (z) rebound",
+   "family": "AUTOGEN-V1-G05",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 1,
+   "verdict": "FAIL",
+   "sharpe": 0.7039,
+   "dsr": 0.0423,
+   "pbo": 0.7143,
+   "max_dd": 0.4176,
+   "closes": 63,
+   "scored_at": "2026-11-26T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G05",
+   "name": "Fear vs last 14 days (z) rebound",
+   "family": "AUTOGEN-V1-G05",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 2,
+   "verdict": "FAIL",
+   "sharpe": 0.1273,
+   "dsr": 0.0033,
+   "pbo": 0.7143,
+   "max_dd": 0.3628,
+   "closes": 51,
+   "scored_at": "2026-11-26T01:09:01+01:00"
   },
   {
    "id": "AUTOGEN-V1-G06",
-   "variant": null,
    "name": "1-day sentiment jump momentum",
    "family": "AUTOGEN-V1-G06",
-   "status": "QUEUED",
-   "verdict": null,
-   "sharpe": null,
-   "dsr": null,
-   "pbo": null,
-   "max_dd": null,
-   "closes": null,
+   "status": "SCORED",
    "diagnostic": true,
-   "scored_at": null
+   "variant": 0,
+   "verdict": "FAIL",
+   "sharpe": -1.1886,
+   "dsr": 0.0,
+   "pbo": 0.7143,
+   "max_dd": 0.7505,
+   "closes": 141,
+   "scored_at": "2026-11-26T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G06",
+   "name": "1-day sentiment jump momentum",
+   "family": "AUTOGEN-V1-G06",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 1,
+   "verdict": "FAIL",
+   "sharpe": -1.0669,
+   "dsr": 0.0,
+   "pbo": 0.7143,
+   "max_dd": 0.6091,
+   "closes": 95,
+   "scored_at": "2026-11-26T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G06",
+   "name": "1-day sentiment jump momentum",
+   "family": "AUTOGEN-V1-G06",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 2,
+   "verdict": "FAIL",
+   "sharpe": -0.73,
+   "dsr": 0.0,
+   "pbo": 0.7143,
+   "max_dd": 0.4978,
+   "closes": 62,
+   "scored_at": "2026-11-26T01:09:01+01:00"
   },
   {
    "id": "AUTOGEN-V1-G07",
@@ -1469,5 +1513,5 @@
    "text": "PAPER only: keine Orders, keine Keys"
   }
  ],
- "fingerprint": "8433e8827df466c4"
+ "fingerprint": "a4fb22089b637efd"
 }
