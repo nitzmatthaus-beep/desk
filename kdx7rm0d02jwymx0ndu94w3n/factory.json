@@ -1,15 +1,15 @@
 {
  "schema": "desk.factory.v1",
  "mode": "PAPER",
- "generated": "2026-11-27T00:14:52+01:00",
- "generated_label": "27.11.2026 00:14 Rom",
- "pipeline_updated": "2026-11-27T00:09:02+01:00",
- "budget_day_utc": "2026-11-26",
+ "generated": "2026-11-27T01:14:30+01:00",
+ "generated_label": "27.11.2026 01:14 Rom",
+ "pipeline_updated": "2026-11-27T01:09:01+01:00",
+ "budget_day_utc": "2026-11-27",
  "budget_used": 2,
  "budget_total": 2,
  "budget_remaining": 0,
  "budget_rule": "2 Einheiten je UTC-Tag; vorab festgeschriebene Familie <=4 Varianten = 1 Einheit; DSR-N zaehlt jede Variante",
- "dsr_n": 304,
+ "dsr_n": 310,
  "gate_sharpe_gt": 1.0,
  "gate_dsr_gt": 0.95,
  "gate_pbo_lt": 0.3,
@@ -20,11 +20,11 @@
  "regime_longs_allowed": false,
  "regime_shorts_allowed": true,
  "regime_day": "2026-11-25",
- "regime_as_of": "27.11 00:08",
+ "regime_as_of": "27.11 01:06",
  "regime_note": "BTC nur Regime-Filter, nie gehandelt",
  "n_specs": 73,
- "n_queue": 17,
- "n_scored": 24,
+ "n_queue": 15,
+ "n_scored": 30,
  "n_pass": 0,
  "counts": [
   {
@@ -41,7 +41,7 @@
   },
   {
    "status": "QUEUED",
-   "n": 17
+   "n": 15
   },
   {
    "status": "REJECTED_CROSS_SECTIONAL",
@@ -53,7 +53,7 @@
   },
   {
    "status": "SCORED",
-   "n": 8
+   "n": 10
   },
   {
    "status": "SCORED_MANUAL",
@@ -62,28 +62,12 @@
  ],
  "queue": [
   {
-   "id": "AUTOGEN-V1-G07",
-   "name": "3-day sentiment turn-up momentum",
-   "family": "AUTOGEN-V1-G07",
-   "units_needed": 1,
-   "queued_at": "2026-11-24T13:09:01+01:00",
-   "waiting": "budget"
-  },
-  {
-   "id": "AUTOGEN-V1-G08",
-   "name": "Greed vs last 30 days (z) momentum",
-   "family": "AUTOGEN-V1-G08",
-   "units_needed": 1,
-   "queued_at": "2026-11-24T13:09:01+01:00",
-   "waiting": null
-  },
-  {
    "id": "AUTOGEN-V1-G09",
    "name": "BTC ETF inflow shock",
    "family": "AUTOGEN-V1-G09",
    "units_needed": 1,
    "queued_at": "2026-11-24T13:09:01+01:00",
-   "waiting": null
+   "waiting": "budget"
   },
   {
    "id": "AUTOGEN-V1-G10",
@@ -891,33 +875,93 @@
   },
   {
    "id": "AUTOGEN-V1-G07",
-   "variant": null,
    "name": "3-day sentiment turn-up momentum",
    "family": "AUTOGEN-V1-G07",
-   "status": "QUEUED",
-   "verdict": null,
-   "sharpe": null,
-   "dsr": null,
-   "pbo": null,
-   "max_dd": null,
-   "closes": null,
+   "status": "SCORED",
    "diagnostic": true,
-   "scored_at": null
+   "variant": 0,
+   "verdict": "FAIL",
+   "sharpe": -1.1274,
+   "dsr": 0.0,
+   "pbo": 0.0143,
+   "max_dd": 0.7439,
+   "closes": 82,
+   "scored_at": "2026-11-27T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G07",
+   "name": "3-day sentiment turn-up momentum",
+   "family": "AUTOGEN-V1-G07",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 1,
+   "verdict": "FAIL",
+   "sharpe": -0.6571,
+   "dsr": 0.0002,
+   "pbo": 0.0143,
+   "max_dd": 0.6169,
+   "closes": 62,
+   "scored_at": "2026-11-27T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G07",
+   "name": "3-day sentiment turn-up momentum",
+   "family": "AUTOGEN-V1-G07",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 2,
+   "verdict": "FAIL",
+   "sharpe": -0.1914,
+   "dsr": 0.0016,
+   "pbo": 0.0143,
+   "max_dd": 0.4874,
+   "closes": 47,
+   "scored_at": "2026-11-27T01:09:01+01:00"
   },
   {
    "id": "AUTOGEN-V1-G08",
-   "variant": null,
    "name": "Greed vs last 30 days (z) momentum",
    "family": "AUTOGEN-V1-G08",
-   "status": "QUEUED",
-   "verdict": null,
-   "sharpe": null,
-   "dsr": null,
-   "pbo": null,
-   "max_dd": null,
-   "closes": null,
+   "status": "SCORED",
    "diagnostic": true,
-   "scored_at": null
+   "variant": 0,
+   "verdict": "FAIL",
+   "sharpe": -0.1944,
+   "dsr": 0.003,
+   "pbo": 0.8286,
+   "max_dd": 0.6881,
+   "closes": 53,
+   "scored_at": "2026-11-27T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G08",
+   "name": "Greed vs last 30 days (z) momentum",
+   "family": "AUTOGEN-V1-G08",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 1,
+   "verdict": "FAIL",
+   "sharpe": -0.2994,
+   "dsr": 0.0017,
+   "pbo": 0.8286,
+   "max_dd": 0.5865,
+   "closes": 48,
+   "scored_at": "2026-11-27T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G08",
+   "name": "Greed vs last 30 days (z) momentum",
+   "family": "AUTOGEN-V1-G08",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 2,
+   "verdict": "FAIL",
+   "sharpe": -0.0206,
+   "dsr": 0.0078,
+   "pbo": 0.8286,
+   "max_dd": 0.4431,
+   "closes": 42,
+   "scored_at": "2026-11-27T01:09:01+01:00"
   },
   {
    "id": "AUTOGEN-V1-G09",
@@ -1513,5 +1557,5 @@
    "text": "PAPER only: keine Orders, keine Keys"
   }
  ],
- "fingerprint": "918ee0fb7f7cf9ad"
+ "fingerprint": "41398671f3989418"
 }
