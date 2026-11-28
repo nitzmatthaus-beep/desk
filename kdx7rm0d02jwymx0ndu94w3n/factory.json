@@ -1,15 +1,15 @@
 {
  "schema": "desk.factory.v1",
  "mode": "PAPER",
- "generated": "2026-11-28T00:14:04+01:00",
- "generated_label": "28.11.2026 00:14 Rom",
- "pipeline_updated": "2026-11-28T00:09:01+01:00",
- "budget_day_utc": "2026-11-27",
+ "generated": "2026-11-28T01:14:04+01:00",
+ "generated_label": "28.11.2026 01:14 Rom",
+ "pipeline_updated": "2026-11-28T01:09:01+01:00",
+ "budget_day_utc": "2026-11-28",
  "budget_used": 2,
  "budget_total": 2,
  "budget_remaining": 0,
  "budget_rule": "2 Einheiten je UTC-Tag; vorab festgeschriebene Familie <=4 Varianten = 1 Einheit; DSR-N zaehlt jede Variante",
- "dsr_n": 310,
+ "dsr_n": 316,
  "gate_sharpe_gt": 1.0,
  "gate_dsr_gt": 0.95,
  "gate_pbo_lt": 0.3,
@@ -20,11 +20,11 @@
  "regime_longs_allowed": false,
  "regime_shorts_allowed": true,
  "regime_day": "2026-11-26",
- "regime_as_of": "28.11 00:13",
+ "regime_as_of": "28.11 01:03",
  "regime_note": "BTC nur Regime-Filter, nie gehandelt",
  "n_specs": 73,
- "n_queue": 15,
- "n_scored": 30,
+ "n_queue": 13,
+ "n_scored": 36,
  "n_pass": 0,
  "counts": [
   {
@@ -41,7 +41,7 @@
   },
   {
    "status": "QUEUED",
-   "n": 15
+   "n": 13
   },
   {
    "status": "REJECTED_CROSS_SECTIONAL",
@@ -53,7 +53,7 @@
   },
   {
    "status": "SCORED",
-   "n": 10
+   "n": 12
   },
   {
    "status": "SCORED_MANUAL",
@@ -62,28 +62,12 @@
  ],
  "queue": [
   {
-   "id": "AUTOGEN-V1-G09",
-   "name": "BTC ETF inflow shock",
-   "family": "AUTOGEN-V1-G09",
-   "units_needed": 1,
-   "queued_at": "2026-11-24T13:09:01+01:00",
-   "waiting": "budget"
-  },
-  {
-   "id": "AUTOGEN-V1-G10",
-   "name": "BTC ETF inflow top percentile",
-   "family": "AUTOGEN-V1-G10",
-   "units_needed": 1,
-   "queued_at": "2026-11-24T13:09:01+01:00",
-   "waiting": null
-  },
-  {
    "id": "AUTOGEN-V1-G11",
    "name": "BTC ETF outflow capitulation rebound",
    "family": "AUTOGEN-V1-G11",
    "units_needed": 1,
    "queued_at": "2026-11-24T13:09:01+01:00",
-   "waiting": null
+   "waiting": "budget"
   },
   {
    "id": "AUTOGEN-V1-G12",
@@ -965,33 +949,93 @@
   },
   {
    "id": "AUTOGEN-V1-G09",
-   "variant": null,
    "name": "BTC ETF inflow shock",
    "family": "AUTOGEN-V1-G09",
-   "status": "QUEUED",
-   "verdict": null,
-   "sharpe": null,
-   "dsr": null,
-   "pbo": null,
-   "max_dd": null,
-   "closes": null,
+   "status": "SCORED",
    "diagnostic": true,
-   "scored_at": null
+   "variant": 0,
+   "verdict": "FAIL",
+   "sharpe": 0.2684,
+   "dsr": 0.0111,
+   "pbo": 0.9571,
+   "max_dd": 0.4594,
+   "closes": 73,
+   "scored_at": "2026-11-28T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G09",
+   "name": "BTC ETF inflow shock",
+   "family": "AUTOGEN-V1-G09",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 1,
+   "verdict": "FAIL",
+   "sharpe": 0.2439,
+   "dsr": 0.0091,
+   "pbo": 0.9571,
+   "max_dd": 0.299,
+   "closes": 63,
+   "scored_at": "2026-11-28T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G09",
+   "name": "BTC ETF inflow shock",
+   "family": "AUTOGEN-V1-G09",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 2,
+   "verdict": "FAIL",
+   "sharpe": 0.1844,
+   "dsr": 0.0068,
+   "pbo": 0.9571,
+   "max_dd": 0.267,
+   "closes": 49,
+   "scored_at": "2026-11-28T01:09:01+01:00"
   },
   {
    "id": "AUTOGEN-V1-G10",
-   "variant": null,
    "name": "BTC ETF inflow top percentile",
    "family": "AUTOGEN-V1-G10",
-   "status": "QUEUED",
-   "verdict": null,
-   "sharpe": null,
-   "dsr": null,
-   "pbo": null,
-   "max_dd": null,
-   "closes": null,
+   "status": "SCORED",
    "diagnostic": true,
-   "scored_at": null
+   "variant": 0,
+   "verdict": "FAIL",
+   "sharpe": 0.3131,
+   "dsr": 0.0198,
+   "pbo": 0.9571,
+   "max_dd": 0.4019,
+   "closes": 67,
+   "scored_at": "2026-11-28T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G10",
+   "name": "BTC ETF inflow top percentile",
+   "family": "AUTOGEN-V1-G10",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 1,
+   "verdict": "FAIL",
+   "sharpe": 0.455,
+   "dsr": 0.0263,
+   "pbo": 0.9571,
+   "max_dd": 0.3689,
+   "closes": 58,
+   "scored_at": "2026-11-28T01:09:01+01:00"
+  },
+  {
+   "id": "AUTOGEN-V1-G10",
+   "name": "BTC ETF inflow top percentile",
+   "family": "AUTOGEN-V1-G10",
+   "status": "SCORED",
+   "diagnostic": true,
+   "variant": 2,
+   "verdict": "FAIL",
+   "sharpe": 0.5312,
+   "dsr": 0.031,
+   "pbo": 0.9571,
+   "max_dd": 0.3289,
+   "closes": 41,
+   "scored_at": "2026-11-28T01:09:01+01:00"
   },
   {
    "id": "AUTOGEN-V1-G11",
@@ -1557,5 +1601,5 @@
    "text": "PAPER only: keine Orders, keine Keys"
   }
  ],
- "fingerprint": "71d42e5d920ba144"
+ "fingerprint": "358c8d93c0b1c4e4"
 }
